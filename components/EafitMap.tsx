@@ -21,7 +21,7 @@ const GRUPOS: Record<CapaId, string[]> = {
   arboles: ["arboles", "arboles-3d"],
   poi: ["poi"],
   transporte: ["bus-rutas", "metro-linea", "metro-3d", "metro-est", "metro-label", "paraderos", "ciclo", "encicla"],
-  oficial: ["oficial-fill", "oficial-line", "oficial-label"],
+  oficial: ["oficial-fill", "oficial-line", "oficial-3d", "porteria-pt", "oficial-label"],
   pot: ["pot-fill", "pot-line", "pot-label"],
   espacio: ["ep-fill"],
   equipamientos: ["eq-fill", "eq-line"],
@@ -112,11 +112,12 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       J("/data/pot.geojson"), J("/data/espacio_publico.geojson"), J("/data/equipamientos.geojson"),
       J("/data/campus_oficial.geojson"), J("/data/rutas.json"), J("/data/rutas_evento.json"),
       J("/data/arboles3d.geojson"), J("/data/metro3d.geojson"), J("/data/rio3d.geojson"),
+      J("/data/senderos.geojson"),
     ]);
 
     conEstilo(map, async () => {
       const [edif, bloques, campus, manz, estrato, arboles, poi, mLinea, mEst, parad, busR, ciclo, encicla,
-        agua, rio, pot, ep, eq, oficial, rutas, rutasEv, arb3d, metro3d, rio3d] = await datos;
+        agua, rio, pot, ep, eq, oficial, rutas, rutasEv, arb3d, metro3d, rio3d, senderos] = await datos;
 
       const add = (id: string, data: any) => map.addSource(id, { type: "geojson", data });
       add("campus", campus);
@@ -129,7 +130,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       add("metro-linea", mLinea); add("metro-est", mEst); add("paraderos", parad); add("bus-rutas", busR);
       add("ciclo", ciclo); add("encicla", encicla); add("agua", agua); add("rio", rio);
       add("pot", pot); add("ep", ep); add("eq", eq); add("oficial", oficial);
-      add("arb3d", arb3d); add("metro3d", metro3d); add("rio3d", rio3d);
+      add("arb3d", arb3d); add("metro3d", metro3d); add("rio3d", rio3d); add("senderos", senderos);
       add("oficial-pt", {
         type: "FeatureCollection",
         features: oficial.features.map((f: any) => ({ ...centroid(f), properties: f.properties })),
@@ -187,6 +188,19 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       L({ id: "campus-base", type: "fill-extrusion", source: "campus", paint: {
         "fill-extrusion-color": "#1b5c40", "fill-extrusion-height": 0.7, "fill-extrusion-base": 0,
         "fill-extrusion-opacity": 0.96 } });
+      L({ id: "senderos", type: "fill-extrusion", source: "senderos", paint: {
+        "fill-extrusion-color": "#d9cbb0", "fill-extrusion-base": 0.72, "fill-extrusion-height": 0.95,
+        "fill-extrusion-opacity": 0.95 } });
+      L({ id: "oficial-3d", type: "fill-extrusion", source: "oficial",
+        filter: ["in", ["get", "cat"], ["literal", ["deporte", "parqueadero"]]], paint: {
+        "fill-extrusion-color": ["case",
+          ["==", ["get", "cat"], "parqueadero"], "#5c6573",
+          [">=", ["index-of", "Piscina", ["coalesce", ["get", "name"], ""]], 0], "#3aa0c8",
+          "#67c07a"],
+        "fill-extrusion-base": 0.76, "fill-extrusion-height": 1.15, "fill-extrusion-opacity": 0.96 } });
+      L({ id: "porteria-pt", type: "circle", source: "oficial-pt", filter: ["==", ["get", "cat"], "porteria"], paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 15, 3.2, 17.5, 6],
+        "circle-color": "#F8D300", "circle-stroke-width": 1.1, "circle-stroke-color": "#1a1400" } });
       L({ id: "edif-3d", type: "fill-extrusion", source: "edif", paint: {
         "fill-extrusion-color": marcarSel(colorEdif("campus")),
         "fill-extrusion-height": ["get", "h"],
@@ -230,8 +244,11 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
         filter: ["<", ["coalesce", ["get", "area_m2"], 0], 400], layout: {
         ...txt, "text-field": lbl, "text-size": 10,
         "text-max-width": 8 }, paint: { ...halo, "text-color": "rgba(255,255,255,0.8)" } });
-      L({ id: "oficial-label", type: "symbol", source: "oficial-pt", minzoom: 15.5, filter: ["==", ["get", "cat"], "porteria"], layout: {
-        ...txt, "text-field": ["concat", "P", ["slice", ["get", "name"], 9]], "text-size": 9.5 }, paint: { ...halo, "text-color": "#F8D300" } });
+      L({ id: "oficial-label", type: "symbol", source: "oficial-pt", minzoom: 15.8, filter: ["==", ["get", "cat"], "porteria"], layout: {
+        ...txt, "text-field": ["concat", "P", ["case",
+          ["==", ["slice", ["get", "name"], 10, 11], "0"], ["slice", ["get", "name"], 9, 11],
+          ["slice", ["get", "name"], 9, 10]]],
+        "text-size": 11, "text-offset": [0, 0.9] }, paint: { ...halo, "text-color": "#F8D300", "text-halo-width": 1.3 } });
       L({ id: "pot-label", type: "symbol", source: "pot", layout: { ...txt, "text-field": ["get", "codigo_tramiento"], "text-size": 10 }, paint: halo });
       L({ id: "radios-label", type: "symbol", source: "radios", layout: {
         ...txt, "symbol-placement": "line", "text-field": ["concat", ["to-string", ["get", "r"]], " m · ~", ["to-string", ["get", "min"]], " min a pie"], "text-size": 10 },
@@ -243,7 +260,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       }
 
       // --- interacción
-      const clicables = ["agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "arboles-3d", "oficial-fill", "metro-3d", "edif-3d", "campus-base", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
+      const clicables = ["agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "arboles-3d", "porteria-pt", "oficial-3d", "oficial-fill", "metro-3d", "edif-3d", "senderos", "campus-base", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
       let selId: number | string | undefined;
       map.on("click", (e) => {
         const capas = clicables.filter((id) => map.getLayer(id) && map.getLayoutProperty(id, "visibility") !== "none");
@@ -477,6 +494,11 @@ function ficha(f: maplibregl.MapGeoJSONFeature): Seleccion {
         filas: [], nota: "Trazado real de OpenStreetMap. El tablero elevado es una convención de la maqueta: la Línea A va en viaducto junto al río." };
     case "paraderos":
       return { tipo: "Paradero de bus", titulo: p.name, filas: [], nota: "OpenStreetMap." };
+    case "senderos":
+      return { tipo: "Recorrido interno", titulo: "Sendero del campus", filas: [],
+        nota: "Vías peatonales y de servicio de OpenStreetMap, recortadas al polígono del campus. La cinta es una convención de la maqueta." };
+    case "porteria-pt":
+    case "oficial-3d":
     case "oficial-fill":
       return { tipo: { porteria: "Portería", parqueadero: "Parqueadero", deporte: "Espacio deportivo", alimentacion: "Alimentación y estancia" }[p.cat as string] || "Campus",
         titulo: p.name, filas: (p.desc || "").split("\n").filter(Boolean).map((l: string) => ["", l.replace(/^-\s*/, "")] as [string, string]),

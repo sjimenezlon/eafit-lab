@@ -362,13 +362,14 @@ write("agua.geojson", fc(water))
 
 # ---------------------------------------------------------------- maqueta 3D: copas del campus, viaducto del Metro y lámina de agua
 # La posición es la real; la copa y el tablero del Metro son convención de maqueta.
-from refinar_maqueta import copas, corredor_metro
+from refinar_maqueta import copas, corredor_metro, senderos
 
 arb3d = copas(arb)
 write("arboles3d.geojson", fc(arb3d))
 print("  arboles 3d:", len(arb3d))
 metro3d = corredor_metro(metro_line)
 write("metro3d.geojson", fc(metro3d))
+write("senderos.geojson", fc(senderos(osm, CAMPUS)))
 
 rios = [loc(shape(f["geometry"])).buffer(14, cap_style=2) for f in water if f["properties"].get("kind") == "river"]
 rio3d = []

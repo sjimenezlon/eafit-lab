@@ -13,7 +13,7 @@ import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from shapely.geometry import Polygon, mapping, shape
+from shapely.geometry import LineString, Polygon, mapping, shape
 from shapely.ops import transform, unary_union
 from shapely.strtree import STRtree
 from pyproj import Transformer
@@ -144,6 +144,43 @@ def _feat(g_local, props):
     }
 
 
+def _masas(placas):
+    """Una masa por bloque, o dos si hay un salto claro de techo (torre y plataforma)."""
+    placas = [x for x in placas if x[0].area >= 40] or placas
+    if not placas:
+        return []
+    grandes = [x for x in placas if x[0].area >= 80] or placas
+    hs = sorted({round(p["h"], 1) for _, p in grandes})
+    corte = None
+    if len(hs) >= 2:
+        i = max(range(len(hs) - 1), key=lambda k: hs[k + 1] - hs[k])
+        if hs[i + 1] - hs[i] >= 8:
+            corte = (hs[i] + hs[i + 1]) / 2
+    grupos = [grandes] if corte is None else (
+        [x for x in grandes if x[1]["h"] < corte],
+        [x for x in grandes if x[1]["h"] >= corte],
+    )
+    out = []
+    for grupo in grupos:
+        if not grupo:
+            continue
+        u = unary_union([g for g, _ in grupo]).buffer(0)
+        area = sum(g.area for g, _ in grupo) or 1
+        h = sum(p["h"] * g.area for g, p in grupo) / area
+        base = dict(max(grupo, key=lambda x: x[0].area)[1])
+        base["h"] = round(h, 1)
+        pisos = [p.get("p") for _, p in grupo if p.get("p")]
+        if pisos:
+            base["p"] = Counter(pisos).most_common(1)[0][0]
+        for part in _partes(u.simplify(0.4)):
+            if part.area < 30:
+                continue
+            p = dict(base)
+            p["a"] = round(part.area)
+            out.append((part, p))
+    return out
+
+
 def refinar_edificios(edif, bloques):
     """Devuelve (edificios, bloques con etiqueta corta)."""
     piezas = []
@@ -178,7 +215,7 @@ def refinar_edificios(edif, bloques):
                     clips.append((inter, piezas[j][1]))
                     if inter.area >= 0.35 * piezas[j][0].area:
                         usados.add(j)
-        vols = _fusionar(clips)
+        vols = _masas(_fusionar(clips))
         if vols:
             for g, p in vols:
                 p = dict(p)
@@ -207,7 +244,7 @@ def refinar_edificios(edif, bloques):
             continue
         resto = g.difference(huellas.buffer(0.5)) if huellas is not None else g
         for part in _partes(resto):
-            if part.area < 18:
+            if part.area < 70:
                 continue
             pp = dict(p)
             pp["a"] = round(part.area)
@@ -240,6 +277,36 @@ def copas(arb):
             "properties": {"h": round(h, 1), "c": 1, "sp": sp, "nc": nc},
             "geometry": rnd(mapping(transform(A_WGS, hexa)), 6),
         })
+    return out
+
+
+def senderos(elementos, campus):
+    """Caminos y vías internas del campus, como cintas sobre el prado."""
+    campus_l = loc(campus).buffer(0)
+    lineas = []
+    vias = {"footway", "path", "pedestrian", "service", "living_street", "steps"}
+    for e in elementos:
+        t = e.get("tags") or {}
+        if e.get("type") != "way" or t.get("highway") not in vias or "geometry" not in e:
+            continue
+        pts = [(p["lon"], p["lat"]) for p in e["geometry"]]
+        if len(pts) < 2:
+            continue
+        g = loc(LineString(pts))
+        if not g.intersects(campus_l):
+            continue
+        seg = g.intersection(campus_l)
+        if seg.is_empty or seg.length < 12:
+            continue
+        lineas.append(seg)
+    if not lineas:
+        return []
+    cinta = unary_union([ln.buffer(1.45, cap_style=2) for ln in lineas]).intersection(campus_l.buffer(-0.3))
+    out = []
+    for part in _partes(cinta.buffer(0).simplify(0.6)):
+        if part.area < 25:
+            continue
+        out.append(_feat(part, {"k": "sendero"}))
     return out
 
 
@@ -284,6 +351,13 @@ def main():
 
     metro = load("metro_linea.geojson")["features"]
     write("metro3d.geojson", {"type": "FeatureCollection", "features": corredor_metro(metro)})
+
+    crudo = Path(__file__).parent / "crudo" / "osm.json"
+    if crudo.exists():
+        campus_g = shape(load("campus.geojson")["features"][0]["geometry"])
+        snd = senderos(json.loads(crudo.read_text())["elements"], campus_g)
+        print("senderos", len(snd))
+        write("senderos.geojson", {"type": "FeatureCollection", "features": snd})
 
     resumen = load("resumen.json")
     resumen["edificios"]["medidos"] = resumen["edificios"].get("medidos") or resumen["edificios"]["n"]
