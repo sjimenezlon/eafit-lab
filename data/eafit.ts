@@ -68,7 +68,7 @@ export const GRUPOS: Grupo[] = [
   {
     titulo: "Campus Medellín",
     cifras: [
-      { k: "Área total", v: "126.058 m²", nota: "campus principal + Los Guayabos", fuente: INFORME_2025 },
+      { k: "Área total", v: "126.058 m²", nota: "oficial: campus principal + Los Guayabos. El polígono dibujado (OpenStreetMap) mide 111.362 m² y no incluye Los Guayabos", fuente: INFORME_2025 },
       { k: "Área construida", v: "96.261 m²", fuente: INFORME_2025 },
       { k: "Zonas verdes", v: "48.346 m²", fuente: INFORME_2025 },
       { k: "Espacios deportivos", v: "15.849 m²", fuente: INFORME_2025 },
@@ -113,6 +113,7 @@ export const BLOQUES_USO: Record<string, { uso: string; fuente: string; confirma
   "19": { uso: "Edificio de Ingenierías; una de las primeras construcciones sostenibles del campus (2010)", fuente: "eafit.edu.co · sostenibilidad", confirmado: true },
   "20": { uso: "Ciencia y tecnología, Escuela de Ciencias Aplicadas e Ingeniería (entregado en 2023)", fuente: "eafit.edu.co · noticias", confirmado: true },
   "26": { uso: "Escuela de Administración", fuente: "Pie de foto en Wikipedia", confirmado: false },
+  "28": { uso: "Auditorio Fundadores, aforo de 630 personas (1987)", fuente: "OpenStreetMap; aforo en El Colombiano, may-2026", confirmado: true },
   "29": { uso: "Administrativo: Registro Académico (piso 1)", fuente: "eafit.edu.co · espacios", confirmado: true },
   "32": { uso: "Centro Cultural Biblioteca Luis Echavarría Villegas", fuente: "Fuentes secundarias", confirmado: false },
   "33": { uso: "Servicios de tecnología", fuente: "Página antigua de eafit.edu.co", confirmado: false },

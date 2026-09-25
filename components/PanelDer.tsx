@@ -118,7 +118,7 @@ function Entorno() {
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-4">
         <Cifra k="Habitantes" v={fmt(pob.personas)} n="censo DANE 2018" />
-        <Cifra k="Edificios" v={fmt(r.edificios.n)} n={`el más alto, ${fmt(r.edificios.h_max, 0)} m`} />
+        <Cifra k="Edificios" v={fmt(r.edificios.n)} n={`el más alto, ${fmt(r.edificios.h_max, 0)} m${r.edificios.campus_volumenes ? ` · ${fmt(r.edificios.campus_volumenes)} volúmenes en el campus` : ""}`} />
         <Cifra k="Árboles" v={fmt(r.arboles.n)} n={`${r.arboles.especies_area} especies`} />
         <Cifra k="Espacio público" v={`${fmt(r.espacio_publico.ha, 1)} ha`} n={`${r.espacio_publico.n} parques y zonas`} />
       </div>

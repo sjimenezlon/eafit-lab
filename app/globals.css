@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body { height: 100%; margin: 0; background: #0b0c10; color: #111; font-family: Inter, Arial, system-ui, sans-serif; letter-spacing: -0.011em; -webkit-font-smoothing: antialiased; }
+html, body { height: 100%; margin: 0; background: #12151c; color: #111; font-family: Inter, Arial, system-ui, sans-serif; letter-spacing: -0.011em; -webkit-font-smoothing: antialiased; }
 .maplibregl-ctrl-attrib { font-size: 9.5px; background: rgba(11,12,16,.55) !important; }
 .maplibregl-ctrl-attrib a, .maplibregl-ctrl-attrib-inner { color: rgba(255,255,255,.55) !important; }
 .maplibregl-ctrl-attrib-button { filter: invert(1) opacity(.5); }

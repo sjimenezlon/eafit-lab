@@ -126,7 +126,6 @@ for f in alt:
                                 "a": round(gl.area), "c": 1 if en_campus else 0,
                                 **({"b": bloque} if bloque else {})},
                  "geometry": rnd(mapping(g.simplify(0.000004)), 6)})
-write("edificios.geojson", fc(edif))
 
 # bloques: huellas OSM con altura City Urban (máximo ponderado) y centroide
 bloques = []
@@ -143,6 +142,10 @@ for e, g in osm_bld:
                                    "levels": t.get("building:levels"), "h": h,
                                    "area_m2": round(gl.area), "kind": t.get("amenity") or t.get("building")},
                     "geometry": rnd(mapping(g))})
+from refinar_maqueta import refinar_edificios
+
+edif, bloques = refinar_edificios(edif, bloques)
+write("edificios.geojson", fc(edif))
 write("bloques.geojson", fc(bloques))
 
 # ---------------------------------------------------------------- mapa oficial EAFIT (uMap)
@@ -357,31 +360,14 @@ write("ciclorrutas.geojson", fc(cycle))
 write("encicla.geojson", fc(encicla))
 write("agua.geojson", fc(water))
 
-# ---------------------------------------------------------------- maqueta 3D: copas, corredor del metro y lámina de agua
-# La posición de cada elemento es la real; el volumen (copa, franja del metro) es una convención de maqueta.
-rng3 = random.Random(11)
-HEX = [(math.cos(i * math.pi / 3), math.sin(i * math.pi / 3)) for i in range(6)]
-arb3d = []
-for f in arb:
-    gl = loc(shape(f["geometry"])).centroid
-    if gl.distance(Point(0, 0)) > 800:
-        continue
-    en = f["properties"]["c"] == 1
-    h = rng3.uniform(5, 11) if en else rng3.uniform(4, 9)
-    r = rng3.uniform(1.8, 3.2)
-    hexa = Polygon([(gl.x + r * cx, gl.y + r * cy) for cx, cy in HEX])
-    arb3d.append({"type": "Feature",
-                  "properties": {"h": round(h, 1), "c": 1 if en else 0,
-                                 "sp": f["properties"]["sp"], "nc": f["properties"]["nc"]},
-                  "geometry": rnd(mapping(transform(A_WGS, hexa)), 6)})
+# ---------------------------------------------------------------- maqueta 3D: copas del campus, viaducto del Metro y lámina de agua
+# La posición es la real; la copa y el tablero del Metro son convención de maqueta.
+from refinar_maqueta import copas, corredor_metro
+
+arb3d = copas(arb)
 write("arboles3d.geojson", fc(arb3d))
 print("  arboles 3d:", len(arb3d))
-
-metro3d = []
-for f in metro_line:
-    franja = transform(A_WGS, loc(shape(f["geometry"])).buffer(3.2, cap_style=2).simplify(0.3))
-    metro3d.append({"type": "Feature", "properties": {"name": f["properties"].get("name") or "Línea A"},
-                    "geometry": rnd(mapping(franja), 6)})
+metro3d = corredor_metro(metro_line)
 write("metro3d.geojson", fc(metro3d))
 
 rios = [loc(shape(f["geometry"])).buffer(14, cap_style=2) for f in water if f["properties"].get("kind") == "river"]
@@ -532,7 +518,9 @@ resumen = {
     "edificios": {"n": len(hs), "h_max": round(max(hs), 1), "h_media": round(sum(hs) / len(hs), 1),
                   "campus_n": len(campus_h), "campus_h_max": round(max(campus_h), 1),
                   "campus_h_media": round(sum(campus_h) / len(campus_h), 1),
-                  "mas_de_20_pisos": sum(1 for h in hs if h > 60)},
+                  "mas_de_20_pisos": sum(1 for h in hs if h > 60),
+                  "medidos": len(hs), "volumenes": len(edif),
+                  "campus_volumenes": sum(1 for f in edif if f["properties"].get("c") == 1)},
     "bloques_osm": len(bloques),
     "poblacion_2018": {k: round(v) for k, v in tot.items() if not k.startswith(("edad", "ee"))},
     "edad_2018": [{"g": edad_lbl[i], "v": round(tot[f"edad{i}"])} for i in range(9)],

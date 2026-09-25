@@ -14,8 +14,8 @@ const MODO_VEL = Object.fromEntries(MODOS.map((m) => [m.id, m.vel])) as Record<M
 
 // Qué capas del mapa pertenecen a cada interruptor del panel.
 const GRUPOS: Record<CapaId, string[]> = {
-  edificios: ["edif-3d"],
-  bloques: ["bloques-label"],
+  edificios: ["edif-3d", "edif-line"],
+  bloques: ["bloques-label", "bloques-label-sm"],
   poblacion: ["manz-fill", "manz-line"],
   estrato: ["estrato-fill"],
   arboles: ["arboles", "arboles-3d"],
@@ -161,45 +161,50 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       L({ id: "ep-fill", type: "fill", source: "ep", paint: { "fill-color": "#47D16A", "fill-opacity": 0.45 } });
       L({ id: "eq-fill", type: "fill", source: "eq", paint: { "fill-color": "#FF8F1B", "fill-opacity": 0.35 } });
       L({ id: "eq-line", type: "line", source: "eq", paint: { "line-color": "#FF8F1B", "line-width": 1 } });
-      L({ id: "campus-fill", type: "fill", source: "campus", paint: { "fill-color": "#00A9E0", "fill-opacity": 0.1 } });
+      L({ id: "campus-fill", type: "fill", source: "campus", paint: { "fill-color": "#1b5c40", "fill-opacity": 0.22 } });
       L({ id: "oficial-fill", type: "fill", source: "oficial", paint: {
         "fill-color": ["match", ["get", "cat"], "porteria", OFICIAL_COLOR.porteria, "parqueadero", OFICIAL_COLOR.parqueadero, "deporte", OFICIAL_COLOR.deporte, OFICIAL_COLOR.alimentacion],
-        "fill-opacity": 0.22 } });
+        "fill-opacity": 0.4 } });
       L({ id: "oficial-line", type: "line", source: "oficial", paint: {
         "line-color": ["match", ["get", "cat"], "porteria", OFICIAL_COLOR.porteria, "parqueadero", OFICIAL_COLOR.parqueadero, "deporte", OFICIAL_COLOR.deporte, OFICIAL_COLOR.alimentacion],
         "line-width": 0.8, "line-opacity": 0.7 } });
-      L({ id: "campus-line", type: "line", source: "campus", paint: { "line-color": "#00A9E0", "line-width": 1.2, "line-opacity": 0.8 } });
+      L({ id: "campus-line", type: "line", source: "campus", paint: { "line-color": "#8adcf6", "line-width": 1.6, "line-opacity": 0.9 } });
       L({ id: "radios", type: "line", source: "radios", paint: { "line-color": "#BCE6FB", "line-width": 1.1, "line-dasharray": [3, 3], "line-opacity": 0.7 } });
       // --- redes
-      L({ id: "rio-poly", type: "fill", source: "rio3d", paint: { "fill-color": "#16394d", "fill-opacity": 0.85 } });
+      L({ id: "rio-poly", type: "fill", source: "rio3d", paint: { "fill-color": "#1a5270", "fill-opacity": 0.92 } });
       L({ id: "agua", type: "line", source: "agua", paint: { "line-color": "#45C6D8", "line-width": ["match", ["get", "kind"], "river", 2.5, 1], "line-opacity": 0.55 } });
       L({ id: "rio", type: "line", source: "rio", layout: { visibility: "none" }, paint: { "line-color": "#45C6D8", "line-width": 3, "line-opacity": 0.5 } });
       L({ id: "bus-rutas", type: "line", source: "bus-rutas", paint: { "line-color": "#155FE7", "line-width": 0.9, "line-opacity": 0.35 } });
       L({ id: "ciclo", type: "line", source: "ciclo", paint: { "line-color": "#46C69F", "line-width": 1.2, "line-opacity": 0.7, "line-dasharray": [2, 1.5] } });
-      L({ id: "metro-linea", type: "line", source: "metro-linea", paint: { "line-color": "#00A9E0", "line-width": 2.5, "line-opacity": 0.85 } });
+      L({ id: "metro-linea", type: "line", source: "metro-linea", paint: { "line-color": "#7ad4f2", "line-width": 1.4, "line-opacity": 0.45 } });
       L({ id: "metro-3d", type: "fill-extrusion", source: "metro3d", paint: {
-        "fill-extrusion-color": "#00A9E0", "fill-extrusion-height": 4, "fill-extrusion-base": 0,
-        "fill-extrusion-opacity": 0.8 } });
+        "fill-extrusion-color": "#5ec8ef", "fill-extrusion-height": 8.6, "fill-extrusion-base": 6.4,
+        "fill-extrusion-opacity": 0.95 } });
       L({ id: "rutas-lineas", type: "line", source: "rutas-lineas", paint: {
         "line-color": ["match", ["get", "m"], ...MODOS.flatMap((m) => [m.id, m.color]), "#fff"],
         "line-width": 1.1, "line-opacity": 0.35 } });
       // --- volumetría
+      L({ id: "campus-base", type: "fill-extrusion", source: "campus", paint: {
+        "fill-extrusion-color": "#1b5c40", "fill-extrusion-height": 0.7, "fill-extrusion-base": 0,
+        "fill-extrusion-opacity": 0.96 } });
       L({ id: "edif-3d", type: "fill-extrusion", source: "edif", paint: {
         "fill-extrusion-color": marcarSel(colorEdif("campus")),
         "fill-extrusion-height": ["get", "h"],
         "fill-extrusion-base": 0,
-        "fill-extrusion-opacity": 0.92,
+        "fill-extrusion-opacity": 0.96,
         "fill-extrusion-vertical-gradient": true } });
+      L({ id: "edif-line", type: "line", source: "edif", minzoom: 16.7, filter: ["==", ["get", "c"], 1], paint: {
+        "line-color": "rgba(255,255,255,0.55)", "line-width": 0.8, "line-opacity": 0.45 } });
       L({ id: "arboles-3d", type: "fill-extrusion", source: "arb3d", paint: {
-        "fill-extrusion-color": ["case", ["==", ["get", "c"], 1], "#3D9B63", "#2E6E4C"],
+        "fill-extrusion-color": ["case", [">", ["get", "h"], 9.5], "#2f6b45", "#3d9a5c"],
         "fill-extrusion-height": ["get", "h"], "fill-extrusion-base": 0,
         "fill-extrusion-opacity": 0.95, "fill-extrusion-vertical-gradient": true } });
       L({ id: "sel-line", type: "line", source: "sel", paint: { "line-color": "#F8D300", "line-width": 3 } });
       // --- puntos
-      L({ id: "arboles", type: "circle", source: "arboles", paint: {
-        "circle-radius": ["interpolate", ["linear"], ["zoom"], 14, 0.7, 16, 1.6, 18, 4],
-        "circle-color": ["case", ["==", ["get", "c"], 1], "#47D16A", "#159449"],
-        "circle-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0.45, 17, 0.9], "circle-pitch-alignment": "map" } });
+      L({ id: "arboles", type: "circle", source: "arboles", filter: ["==", ["get", "c"], 0], paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 14, 0.6, 16, 1.3, 18, 3.2],
+        "circle-color": "#3d9b63",
+        "circle-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0.35, 17, 0.75], "circle-pitch-alignment": "map" } });
       L({ id: "poi", type: "circle", source: "poi", paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 14, 2.5, 18, 6],
         "circle-color": ["match", ["get", "cat"], ...Object.entries(POI_COLOR).flat(), "#fff"],
@@ -210,14 +215,21 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       L({ id: "agentes", type: "circle", source: "agentes", paint: {
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 13, 1.6, 16, 3, 18, 5],
         "circle-color": ["match", ["get", "m"], ...MODOS.flatMap((m) => [m.id, m.color]), "#fff"],
-        "circle-blur": 0.15 } });
+        "circle-stroke-width": 0.7, "circle-stroke-color": "rgba(8,10,14,0.65)",
+        "circle-blur": 0.05 } });
       // --- rótulos
       const txt = { "text-font": ["Noto Sans Regular"], "text-size": 10.5, "text-letter-spacing": 0.02 } as any;
       const halo = { "text-color": "rgba(255,255,255,0.85)", "text-halo-color": "rgba(11,12,16,0.85)", "text-halo-width": 1.2 };
       L({ id: "metro-label", type: "symbol", source: "metro-est", layout: { ...txt, "text-field": ["concat", "Metro ", ["get", "name"]], "text-offset": [0, 1.5], "text-size": 12 }, paint: halo });
-      L({ id: "bloques-label", type: "symbol", source: "bloques-pt", minzoom: 15.2, layout: {
-        ...txt, "text-field": ["coalesce", ["get", "ref"], ""], "text-size": 11,
-        "text-max-width": 8, "symbol-z-order": "source" }, paint: { ...halo, "text-color": "#FFFFFF" } });
+      const lbl = ["coalesce", ["get", "lbl"], ["get", "ref"], ""] as any;
+      L({ id: "bloques-label", type: "symbol", source: "bloques-pt", minzoom: 15.4,
+        filter: [">=", ["coalesce", ["get", "area_m2"], 0], 400], layout: {
+        ...txt, "text-field": lbl, "text-size": 12,
+        "text-max-width": 8, "symbol-z-order": "source" }, paint: { ...halo, "text-color": "#FFFFFF", "text-halo-width": 1.4 } });
+      L({ id: "bloques-label-sm", type: "symbol", source: "bloques-pt", minzoom: 17.4,
+        filter: ["<", ["coalesce", ["get", "area_m2"], 0], 400], layout: {
+        ...txt, "text-field": lbl, "text-size": 10,
+        "text-max-width": 8 }, paint: { ...halo, "text-color": "rgba(255,255,255,0.8)" } });
       L({ id: "oficial-label", type: "symbol", source: "oficial-pt", minzoom: 15.5, filter: ["==", ["get", "cat"], "porteria"], layout: {
         ...txt, "text-field": ["concat", "P", ["slice", ["get", "name"], 9]], "text-size": 9.5 }, paint: { ...halo, "text-color": "#F8D300" } });
       L({ id: "pot-label", type: "symbol", source: "pot", layout: { ...txt, "text-field": ["get", "codigo_tramiento"], "text-size": 10 }, paint: halo });
@@ -231,7 +243,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       }
 
       // --- interacción
-      const clicables = ["agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "arboles-3d", "oficial-fill", "metro-3d", "edif-3d", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
+      const clicables = ["agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "arboles-3d", "oficial-fill", "metro-3d", "edif-3d", "campus-base", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
       let selId: number | string | undefined;
       map.on("click", (e) => {
         const capas = clicables.filter((id) => map.getLayer(id) && map.getLayoutProperty(id, "visibility") !== "none");
@@ -344,7 +356,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
   useEffect(() => {
     const map = mapRef.current;
     if (map && listo.current) aplicarEstado(map, st);
-  }, [st.capas, st.basemap, st.colorEdif, st.poiCats, st]);
+  }, [st.capas, st.basemap, st.colorEdif, st.poiCats]);
 
   const vistaPrev = useRef(st.vista);
   useEffect(() => {
@@ -362,6 +374,13 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
   );
 }
 
+function usoDe(nombre?: string, ref?: string) {
+  const id = ref || nombre?.match(/Bloque (\d+)/)?.[1];
+  if (id && BLOQUES_USO[id]) return BLOQUES_USO[id];
+  if (nombre && /Biblioteca/i.test(nombre)) return BLOQUES_USO["32"];
+  return undefined;
+}
+
 /** El edificio tocado se pinta de amarillo por feature-state. */
 function marcarSel(expr: any): any {
   return ["case", ["boolean", ["feature-state", "sel"], false], "#F8D300", expr];
@@ -369,10 +388,12 @@ function marcarSel(expr: any): any {
 
 function colorEdif(modo: "altura" | "campus"): any {
   if (modo === "altura") {
-    return ["interpolate", ["linear"], ["get", "h"], 0, "#2c3a4f", 12, "#4458A6", 30, "#155FE7", 60, "#46C69F", 100, "#F8D300"];
+    return ["interpolate", ["linear"], ["get", "h"], 0, "#3d4a63", 8, "#3d6ea8", 18, "#2aa3c7", 35, "#46C69F", 60, "#F8D300", 100, "#ffb020"];
   }
-  return ["case", ["==", ["get", "c"], 1], "#00A9E0",
-    ["interpolate", ["linear"], ["get", "h"], 0, "#2b2e35", 30, "#3f434c", 90, "#5d616b"]];
+  // El campus va en azules EAFIT, más claros cuanto más alto, para separar los bloques.
+  return ["case", ["==", ["get", "c"], 1],
+    ["interpolate", ["linear"], ["get", "h"], 0, "#127eae", 10, "#3ec4ef", 22, "#8adcf6", 40, "#e8f7ff"],
+    ["interpolate", ["linear"], ["get", "h"], 0, "#4a5160", 12, "#6a7384", 30, "#8e98a8", 70, "#d5dbe3"]];
 }
 
 function aplicarEstado(map: MlMap, s: ReturnType<typeof lab.get>) {
@@ -399,21 +420,33 @@ function ficha(f: maplibregl.MapGeoJSONFeature): Seleccion {
   const p: any = f.properties || {};
   switch (f.layer.id) {
     case "edif-3d": {
-      const ref = p.b?.match(/Bloque (\d+)/)?.[1];
-      const uso = ref ? BLOQUES_USO[ref] : undefined;
+      const uso = usoDe(p.b, p.ref);
       return {
         tipo: p.c === 1 ? "Edificio del campus EAFIT" : "Edificación del entorno",
         titulo: p.b || (p.c === 1 ? "Edificio del campus" : "Edificación"),
         filas: [
-          ["Altura medida", `${fmt(p.h, 1)} m`],
+          ["Altura", p.e ? `${fmt(p.h, 1)} m, estimada` : `${fmt(p.h, 1)} m`],
           ["Pisos (catastro)", p.p ? String(p.p) : "sin cruce"],
           ["Área de huella", `${fmt(p.a)} m²`],
-          ["Cota del suelo", `${fmt(p.z)} m s. n. m.`],
+          ...(p.z != null ? [["Cota del suelo", `${fmt(p.z)} m s. n. m.`] as [string, string]] : []),
           ...(uso ? [["Uso", uso.uso + (uso.confirmado ? "" : " (sin confirmar)")] as [string, string]] : []),
         ],
-        nota: "Altura: Alcaldía de Medellín, Cartografía City Urban 2025 (AGL). Pisos: Catastro, Huella de construcción. Nombre del bloque: OpenStreetMap.",
+        nota: p.e
+          ? "Esta huella no tiene medición de City Urban. La altura se estimó con los pisos de OpenStreetMap, a 3,1 m por piso. El nombre viene de OpenStreetMap."
+          : "Altura del techo de este volumen: Alcaldía de Medellín, Cartografía City Urban 2025 (AGL). Las piezas contiguas del mismo techo se unieron. Pisos: Catastro. Nombre: OpenStreetMap.",
       };
     }
+    case "campus-base":
+      return {
+        tipo: "Campus EAFIT · sede Medellín",
+        titulo: "Límite dibujado del campus",
+        filas: [
+          ["Área del polígono", "111.362 m²"],
+          ["Área oficial 2025", "126.058 m²"],
+          ["No está en el polígono", "Los Guayabos"],
+        ],
+        nota: "Polígono de OpenStreetMap. El Informe de Sostenibilidad 2025 suma el campus principal y Los Guayabos; ese predio no está en el polígono dibujado.",
+      };
     case "manz-fill":
       return {
         tipo: "Manzana censal (DANE CNPV 2018)", titulo: `${p.com ?? ""} · ${p.mun}`,
@@ -441,7 +474,7 @@ function ficha(f: maplibregl.MapGeoJSONFeature): Seleccion {
         nota: "CityBikes API, red «encicla», consultada el 25-sep-2026." };
     case "metro-3d":
       return { tipo: "Metro de Medellín", titulo: p.name || "Corredor de la Línea A",
-        filas: [], nota: "Trazado real de OpenStreetMap; la franja en relieve es una convención de la maqueta." };
+        filas: [], nota: "Trazado real de OpenStreetMap. El tablero elevado es una convención de la maqueta: la Línea A va en viaducto junto al río." };
     case "paraderos":
       return { tipo: "Paradero de bus", titulo: p.name, filas: [], nota: "OpenStreetMap." };
     case "oficial-fill":

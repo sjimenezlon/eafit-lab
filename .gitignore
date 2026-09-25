@@ -4,5 +4,6 @@ node_modules
 *.tsbuildinfo
 .DS_Store
 scripts/crudo/
+scripts/__pycache__/
 qa/*.png
 .env*.local
