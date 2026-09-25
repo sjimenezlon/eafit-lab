@@ -357,6 +357,40 @@ write("ciclorrutas.geojson", fc(cycle))
 write("encicla.geojson", fc(encicla))
 write("agua.geojson", fc(water))
 
+# ---------------------------------------------------------------- maqueta 3D: copas, corredor del metro y lámina de agua
+# La posición de cada elemento es la real; el volumen (copa, franja del metro) es una convención de maqueta.
+rng3 = random.Random(11)
+HEX = [(math.cos(i * math.pi / 3), math.sin(i * math.pi / 3)) for i in range(6)]
+arb3d = []
+for f in arb:
+    gl = loc(shape(f["geometry"])).centroid
+    if gl.distance(Point(0, 0)) > 800:
+        continue
+    en = f["properties"]["c"] == 1
+    h = rng3.uniform(5, 11) if en else rng3.uniform(4, 9)
+    r = rng3.uniform(1.8, 3.2)
+    hexa = Polygon([(gl.x + r * cx, gl.y + r * cy) for cx, cy in HEX])
+    arb3d.append({"type": "Feature",
+                  "properties": {"h": round(h, 1), "c": 1 if en else 0,
+                                 "sp": f["properties"]["sp"], "nc": f["properties"]["nc"]},
+                  "geometry": rnd(mapping(transform(A_WGS, hexa)), 6)})
+write("arboles3d.geojson", fc(arb3d))
+print("  arboles 3d:", len(arb3d))
+
+metro3d = []
+for f in metro_line:
+    franja = transform(A_WGS, loc(shape(f["geometry"])).buffer(3.2, cap_style=2).simplify(0.3))
+    metro3d.append({"type": "Feature", "properties": {"name": f["properties"].get("name") or "Línea A"},
+                    "geometry": rnd(mapping(franja), 6)})
+write("metro3d.geojson", fc(metro3d))
+
+rios = [loc(shape(f["geometry"])).buffer(14, cap_style=2) for f in water if f["properties"].get("kind") == "river"]
+rio3d = []
+if rios:
+    lamina = transform(A_WGS, unary_union(rios).simplify(0.5))
+    rio3d = [{"type": "Feature", "properties": {"name": "Río Medellín"}, "geometry": rnd(mapping(lamina), 6)}]
+write("rio3d.geojson", fc(rio3d))
+
 # ---------------------------------------------------------------- red peatonal/vial + rutas de agentes
 G = nx.Graph()
 GV = nx.Graph()

@@ -52,6 +52,8 @@ export function estiloBase(): StyleSpecification {
       ...baseLayers.filter((l) => l.type === "symbol").map((l) => ({ ...l, metadata: { base: "etiquetas" } })),
     ] as LayerSpecification[],
     terrain: { source: "terreno", exaggeration: 1.15 },
+    // Luz rasante fija al encuadre: modela las caras de la extrusión como en una maqueta física.
+    light: { anchor: "viewport", color: "#ffffff", intensity: 0.4, position: [1.15, 210, 55] } as any,
     sky: { "sky-color": "#0d0f14", "horizon-color": "#1a1e27", "fog-color": "#0d0f14", "fog-ground-blend": 0.6 } as any,
   };
 }

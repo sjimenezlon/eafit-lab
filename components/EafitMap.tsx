@@ -18,14 +18,14 @@ const GRUPOS: Record<CapaId, string[]> = {
   bloques: ["bloques-label"],
   poblacion: ["manz-fill", "manz-line"],
   estrato: ["estrato-fill"],
-  arboles: ["arboles"],
+  arboles: ["arboles", "arboles-3d"],
   poi: ["poi"],
-  transporte: ["bus-rutas", "metro-linea", "metro-est", "metro-label", "paraderos", "ciclo", "encicla"],
+  transporte: ["bus-rutas", "metro-linea", "metro-3d", "metro-est", "metro-label", "paraderos", "ciclo", "encicla"],
   oficial: ["oficial-fill", "oficial-line", "oficial-label"],
   pot: ["pot-fill", "pot-line", "pot-label"],
   espacio: ["ep-fill"],
   equipamientos: ["eq-fill", "eq-line"],
-  agua: ["agua"],
+  agua: ["agua", "rio-poly"],
   radios: ["radios", "radios-label"],
   rutas: ["rutas-lineas"],
 };
@@ -93,6 +93,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       bearing: VISTA_3D.bearing,
       maxPitch: 78,
       attributionControl: { compact: true },
+      antialias: true,
       preserveDrawingBuffer: true,
     } as any);
     mapRef.current = map;
@@ -110,15 +111,16 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       J("/data/encicla.geojson"), J("/data/agua.geojson"), J("/data/rio_medellin.geojson"),
       J("/data/pot.geojson"), J("/data/espacio_publico.geojson"), J("/data/equipamientos.geojson"),
       J("/data/campus_oficial.geojson"), J("/data/rutas.json"), J("/data/rutas_evento.json"),
+      J("/data/arboles3d.geojson"), J("/data/metro3d.geojson"), J("/data/rio3d.geojson"),
     ]);
 
     conEstilo(map, async () => {
       const [edif, bloques, campus, manz, estrato, arboles, poi, mLinea, mEst, parad, busR, ciclo, encicla,
-        agua, rio, pot, ep, eq, oficial, rutas, rutasEv] = await datos;
+        agua, rio, pot, ep, eq, oficial, rutas, rutasEv, arb3d, metro3d, rio3d] = await datos;
 
       const add = (id: string, data: any) => map.addSource(id, { type: "geojson", data });
       add("campus", campus);
-      add("edif", edif);
+      map.addSource("edif", { type: "geojson", data: edif, generateId: true });
       add("bloques-pt", {
         type: "FeatureCollection",
         features: bloques.features.map((f: any) => ({ ...centroid(f), properties: f.properties })),
@@ -127,6 +129,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       add("metro-linea", mLinea); add("metro-est", mEst); add("paraderos", parad); add("bus-rutas", busR);
       add("ciclo", ciclo); add("encicla", encicla); add("agua", agua); add("rio", rio);
       add("pot", pot); add("ep", ep); add("eq", eq); add("oficial", oficial);
+      add("arb3d", arb3d); add("metro3d", metro3d); add("rio3d", rio3d);
       add("oficial-pt", {
         type: "FeatureCollection",
         features: oficial.features.map((f: any) => ({ ...centroid(f), properties: f.properties })),
@@ -168,21 +171,29 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       L({ id: "campus-line", type: "line", source: "campus", paint: { "line-color": "#00A9E0", "line-width": 1.2, "line-opacity": 0.8 } });
       L({ id: "radios", type: "line", source: "radios", paint: { "line-color": "#BCE6FB", "line-width": 1.1, "line-dasharray": [3, 3], "line-opacity": 0.7 } });
       // --- redes
+      L({ id: "rio-poly", type: "fill", source: "rio3d", paint: { "fill-color": "#16394d", "fill-opacity": 0.85 } });
       L({ id: "agua", type: "line", source: "agua", paint: { "line-color": "#45C6D8", "line-width": ["match", ["get", "kind"], "river", 2.5, 1], "line-opacity": 0.55 } });
       L({ id: "rio", type: "line", source: "rio", layout: { visibility: "none" }, paint: { "line-color": "#45C6D8", "line-width": 3, "line-opacity": 0.5 } });
       L({ id: "bus-rutas", type: "line", source: "bus-rutas", paint: { "line-color": "#155FE7", "line-width": 0.9, "line-opacity": 0.35 } });
       L({ id: "ciclo", type: "line", source: "ciclo", paint: { "line-color": "#46C69F", "line-width": 1.2, "line-opacity": 0.7, "line-dasharray": [2, 1.5] } });
       L({ id: "metro-linea", type: "line", source: "metro-linea", paint: { "line-color": "#00A9E0", "line-width": 2.5, "line-opacity": 0.85 } });
+      L({ id: "metro-3d", type: "fill-extrusion", source: "metro3d", paint: {
+        "fill-extrusion-color": "#00A9E0", "fill-extrusion-height": 4, "fill-extrusion-base": 0,
+        "fill-extrusion-opacity": 0.8 } });
       L({ id: "rutas-lineas", type: "line", source: "rutas-lineas", paint: {
         "line-color": ["match", ["get", "m"], ...MODOS.flatMap((m) => [m.id, m.color]), "#fff"],
         "line-width": 1.1, "line-opacity": 0.35 } });
       // --- volumetría
       L({ id: "edif-3d", type: "fill-extrusion", source: "edif", paint: {
-        "fill-extrusion-color": colorEdif("campus"),
+        "fill-extrusion-color": marcarSel(colorEdif("campus")),
         "fill-extrusion-height": ["get", "h"],
         "fill-extrusion-base": 0,
         "fill-extrusion-opacity": 0.92,
         "fill-extrusion-vertical-gradient": true } });
+      L({ id: "arboles-3d", type: "fill-extrusion", source: "arb3d", paint: {
+        "fill-extrusion-color": ["case", ["==", ["get", "c"], 1], "#3D9B63", "#2E6E4C"],
+        "fill-extrusion-height": ["get", "h"], "fill-extrusion-base": 0,
+        "fill-extrusion-opacity": 0.95, "fill-extrusion-vertical-gradient": true } });
       L({ id: "sel-line", type: "line", source: "sel", paint: { "line-color": "#F8D300", "line-width": 3 } });
       // --- puntos
       L({ id: "arboles", type: "circle", source: "arboles", paint: {
@@ -220,7 +231,8 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       }
 
       // --- interacción
-      const clicables = ["agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "oficial-fill", "edif-3d", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
+      const clicables = ["agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "arboles-3d", "oficial-fill", "metro-3d", "edif-3d", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
+      let selId: number | string | undefined;
       map.on("click", (e) => {
         const capas = clicables.filter((id) => map.getLayer(id) && map.getLayoutProperty(id, "visibility") !== "none");
         const f = map.queryRenderedFeatures(e.point, { layers: capas })[0];
@@ -228,9 +240,15 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
         const sel = ficha(f);
         if (!sel) return;
         lab.set({ seleccion: sel, panelDer: "ficha" });
+        if (selId != null) map.setFeatureState({ source: "edif", id: selId }, { sel: false });
+        selId = undefined;
+        if (f.layer.id === "edif-3d" && f.id != null) {
+          selId = f.id;
+          map.setFeatureState({ source: "edif", id: selId }, { sel: true });
+        }
         const g: any = f.geometry;
         (map.getSource("sel") as GeoJSONSource).setData(
-          g.type === "Polygon" || g.type === "MultiPolygon" ? { type: "Feature", properties: {}, geometry: g } as any : { type: "FeatureCollection", features: [] });
+          f.layer.id !== "edif-3d" && (g.type === "Polygon" || g.type === "MultiPolygon") ? { type: "Feature", properties: {}, geometry: g } as any : { type: "FeatureCollection", features: [] });
       });
       for (const id of clicables) {
         map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
@@ -344,6 +362,11 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
   );
 }
 
+/** El edificio tocado se pinta de amarillo por feature-state. */
+function marcarSel(expr: any): any {
+  return ["case", ["boolean", ["feature-state", "sel"], false], "#F8D300", expr];
+}
+
 function colorEdif(modo: "altura" | "campus"): any {
   if (modo === "altura") {
     return ["interpolate", ["linear"], ["get", "h"], 0, "#2c3a4f", 12, "#4458A6", 30, "#155FE7", 60, "#46C69F", 100, "#F8D300"];
@@ -362,7 +385,7 @@ function aplicarEstado(map: MlMap, s: ReturnType<typeof lab.get>) {
     if ((l as any).metadata?.base === "maqueta") vis(l.id, !sat);
   }
   if (map.getLayer("edif-3d")) {
-    map.setPaintProperty("edif-3d", "fill-extrusion-color", colorEdif(s.colorEdif));
+    map.setPaintProperty("edif-3d", "fill-extrusion-color", marcarSel(colorEdif(s.colorEdif)));
     map.setPaintProperty("edif-3d", "fill-extrusion-opacity", s.capas.poblacion || s.capas.estrato || s.capas.pot ? 0.55 : 0.92);
   }
   if (map.getLayer("poi")) {
@@ -403,8 +426,11 @@ function ficha(f: maplibregl.MapGeoJSONFeature): Seleccion {
       return { tipo: "Estrato socioeconómico", titulo: `Estrato ${p.e}`, filas: [["Código de barrio", p.barrio ?? "—"]],
         nota: "Alcaldía de Medellín, capa Estrato socioeconómico (moda por lote o manzana). CC BY-SA 4.0." };
     case "arboles":
+    case "arboles-3d":
       return { tipo: p.c === 1 ? "Árbol del campus (registro SAU)" : "Árbol urbano", titulo: p.nc || p.sp,
-        filas: [["Especie", p.sp]], nota: "Alcaldía de Medellín, Sistema de Arbolado Urbano (SAU). El inventario propio de EAFIT (1.568 individuos, 139 especies) no está georreferenciado en abierto." };
+        filas: [["Especie", p.sp] as [string, string],
+          ...(p.h ? [["Copa en la maqueta", `${fmt(p.h, 1)} m (ilustrativa)`] as [string, string]] : [])],
+        nota: "Alcaldía de Medellín, Sistema de Arbolado Urbano (SAU). La posición es la registrada; la copa en 3D es una convención de la maqueta. El inventario propio de EAFIT (1.568 individuos, 139 especies) no está georreferenciado en abierto." };
     case "poi":
       return { tipo: POI_LABEL[p.cat] || "Lugar", titulo: p.name, filas: [["Tipo", p.tipo], ["Dentro del campus", p.c === 1 ? "sí" : "no"]], nota: "OpenStreetMap, consultado 25-sep-2026." };
     case "metro-est":
@@ -413,6 +439,9 @@ function ficha(f: maplibregl.MapGeoJSONFeature): Seleccion {
     case "encicla":
       return { tipo: "Estación EnCicla", titulo: p.name, filas: [["Bicicletas disponibles (al consultar)", String(p.free ?? "—")], ["Puestos libres", String(p.slots ?? "—")]],
         nota: "CityBikes API, red «encicla», consultada el 25-sep-2026." };
+    case "metro-3d":
+      return { tipo: "Metro de Medellín", titulo: p.name || "Corredor de la Línea A",
+        filas: [], nota: "Trazado real de OpenStreetMap; la franja en relieve es una convención de la maqueta." };
     case "paraderos":
       return { tipo: "Paradero de bus", titulo: p.name, filas: [], nota: "OpenStreetMap." };
     case "oficial-fill":

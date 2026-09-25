@@ -46,7 +46,7 @@ const initial: LabState = {
   basemap: "maqueta",
   vista: "3d",
   capas: {
-    edificios: true, bloques: true, poblacion: false, estrato: false, arboles: false, poi: false,
+    edificios: true, bloques: true, poblacion: false, estrato: false, arboles: true, poi: false,
     transporte: true, oficial: true, pot: false, espacio: false, equipamientos: false, agua: true, radios: false, rutas: false,
   },
   colorEdif: "campus",
