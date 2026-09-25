@@ -2,15 +2,15 @@
 import { useSyncExternalStore } from "react";
 
 export type Modo = "pie" | "metro" | "bus" | "bici" | "carro" | "moto" | "taxi";
-export const MODOS: { id: Modo; label: string; color: string; vel: number }[] = [
+export const MODOS: { id: Modo; label: string; corto: string; color: string; vel: number }[] = [
   // vel en m/s (velocidad media de desplazamiento del último tramo)
-  { id: "carro", label: "Carro / parqueadero", color: "#6E76AB", vel: 6.5 },
-  { id: "metro", label: "Metro · Aguacatala / Poblado", color: "#00A9E0", vel: 1.3 },
-  { id: "bus", label: "Bus / integrado", color: "#155FE7", vel: 1.3 },
-  { id: "moto", label: "Moto", color: "#FF7AC0", vel: 7 },
-  { id: "taxi", label: "Taxi / plataforma", color: "#F8D300", vel: 6.5 },
-  { id: "bici", label: "Bici / EnCicla", color: "#46C69F", vel: 3.8 },
-  { id: "pie", label: "A pie desde el barrio", color: "#FF8F1B", vel: 1.3 },
+  { id: "carro", corto: "Carro", label: "Carro / parqueadero", color: "#6E76AB", vel: 6.5 },
+  { id: "metro", corto: "Metro", label: "Metro · Aguacatala / Poblado", color: "#00A9E0", vel: 1.3 },
+  { id: "bus", corto: "Bus", label: "Bus / integrado", color: "#155FE7", vel: 1.3 },
+  { id: "moto", corto: "Moto", label: "Moto", color: "#FF7AC0", vel: 7 },
+  { id: "taxi", corto: "Taxi", label: "Taxi / plataforma", color: "#F8D300", vel: 6.5 },
+  { id: "bici", corto: "Bici", label: "Bici / EnCicla", color: "#46C69F", vel: 3.8 },
+  { id: "pie", corto: "A pie", label: "A pie desde el barrio", color: "#FF8F1B", vel: 1.3 },
 ];
 
 export const REPARTO_EOD: Record<Modo, number> = { pie: 42, bici: 3, bus: 16, metro: 11, carro: 9, moto: 15, taxi: 4 };
@@ -46,7 +46,7 @@ const initial: LabState = {
   basemap: "maqueta",
   vista: "3d",
   capas: {
-    edificios: true, bloques: true, poblacion: false, estrato: false, arboles: true, poi: false,
+    edificios: true, bloques: true, poblacion: false, estrato: false, arboles: false, poi: false,
     transporte: true, oficial: true, pot: false, espacio: false, equipamientos: false, agua: true, radios: false, rutas: false,
   },
   colorEdif: "campus",

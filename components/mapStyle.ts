@@ -35,16 +35,16 @@ export function estiloBase(): StyleSpecification {
       },
     },
     layers: [
-      { id: "fondo", type: "background", paint: { "background-color": "#0d0f14" } },
+      { id: "fondo", type: "background", paint: { "background-color": "#0b0c10" } },
       { id: "sat", type: "raster", source: "sat", layout: { visibility: "none" }, paint: { "raster-saturation": -0.25 } },
       {
         id: "sombra",
         type: "hillshade",
         source: "terreno",
         paint: {
-          "hillshade-exaggeration": 0.35,
+          "hillshade-exaggeration": 0.25,
           "hillshade-shadow-color": "#000000",
-          "hillshade-highlight-color": "#3a3f4b",
+          "hillshade-highlight-color": "#2a2e36",
         },
       },
       ...baseLayers.filter((l) => l.type !== "symbol"),

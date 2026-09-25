@@ -4,64 +4,73 @@ import dynamic from "next/dynamic";
 import type { Map as MlMap } from "maplibre-gl";
 import Header from "./Header";
 import Intro from "./Intro";
-import PanelIzq from "./PanelIzq";
+import PanelIzq, { Capas } from "./PanelIzq";
 import PanelDer from "./PanelDer";
 import { useLab, lab } from "./store";
 import { VISTA_3D } from "./mapStyle";
 
 const EafitMap = dynamic(() => import("./EafitMap"), {
   ssr: false,
-  loading: () => <div className="flex h-full items-center justify-center text-sm text-white/70">Cargando la maqueta…</div>,
+  loading: () => <div className="flex h-full items-center justify-center text-[13px] text-white/50">Cargando la maqueta…</div>,
 });
+
+const Icono = ({ d }: { d: string }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>
+);
 
 export default function AppShell() {
   const mapRef = useRef<MlMap | null>(null);
   const st = useLab();
+  const [capas, setCapas] = useState(false);
   const [movil, setMovil] = useState<"izq" | "der" | null>(null);
   // ?intro=0 abre directo en la maqueta (útil para enlaces y pruebas)
   useEffect(() => {
     if (new URLSearchParams(location.search).get("intro") === "0") lab.set({ intro: false });
   }, []);
-
-  const zoom = (d: number) => mapRef.current?.easeTo({ zoom: (mapRef.current.getZoom() || 15) + d, duration: 300 });
   const reset = () => mapRef.current?.easeTo({ ...VISTA_3D, duration: 1000 });
+
+  const boton = "flex h-9 items-center gap-2 rounded-full bg-white/90 px-3.5 text-[12.5px] font-medium text-zafre shadow-lg backdrop-blur hover:bg-white";
 
   return (
     <main className="fixed inset-0 overflow-hidden">
-      <div style={{ position: "absolute", top: 56, left: 0, right: 0, bottom: 28 }}>
+      <div style={{ position: "absolute", inset: 0 }}>
         <EafitMap mapRef={mapRef} />
       </div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-black/60 to-transparent" />
       <Header />
 
-      {/* paneles: laterales en escritorio, hoja inferior en móvil */}
-      <aside className={`absolute left-4 top-[72px] bottom-11 z-20 w-[330px] ${movil === "izq" ? "max-md:flex" : "max-md:hidden"} max-md:left-2 max-md:right-2 max-md:w-auto max-md:top-[64px] max-md:bottom-28 flex flex-col`}>
+      <aside className={`absolute left-5 top-[68px] z-20 w-[300px] ${capas ? "hidden" : ""} ${movil === "izq" ? "max-md:block" : "max-md:hidden"} max-md:inset-x-3 max-md:top-[56px] max-md:w-auto`}>
         <PanelIzq />
       </aside>
-      <aside className={`absolute right-4 top-[72px] bottom-11 z-20 w-[340px] ${movil === "der" ? "max-md:flex" : "max-md:hidden"} max-md:left-2 max-md:right-2 max-md:w-auto max-md:top-[64px] max-md:bottom-28 flex flex-col`}>
+      <aside className={`absolute bottom-5 right-5 top-[68px] z-20 flex w-[320px] flex-col ${movil === "der" ? "max-md:flex" : "max-md:hidden"} max-md:inset-x-3 max-md:bottom-20 max-md:top-[56px] max-md:w-auto`}>
         <PanelDer />
       </aside>
 
-      {/* controles de cámara */}
-      <div className="panel absolute right-[372px] top-[72px] z-10 flex flex-col overflow-hidden max-md:right-2 max-md:top-[64px]">
-        {[["+", () => zoom(0.7), "Acercar"], ["−", () => zoom(-0.7), "Alejar"], ["⟲", reset, "Volver a la vista inicial"]].map(([t, fn, l]) => (
-          <button key={l as string} aria-label={l as string} title={l as string} onClick={fn as () => void}
-            className="h-9 w-9 border-b border-gris-borde text-lg text-zafre last:border-0 hover:bg-azure/10">{t as string}</button>
-        ))}
+      {/* capas, encuadre y fuentes */}
+      <div className="absolute bottom-5 left-5 z-20 flex flex-col items-start gap-2 max-md:bottom-20 max-md:left-3">
+        {capas && (
+          <div className="card max-h-[calc(100vh-150px)] w-[260px] overflow-y-auto p-4 scroll-fino">
+            <Capas />
+          </div>
+        )}
+        <div className="flex gap-2">
+          <button onClick={() => { setCapas(!capas); setMovil(null); }} aria-expanded={capas} className={boton}>
+            <Icono d="M12 3 2 8l10 5 10-5-10-5ZM2 16l10 5 10-5M2 12l10 5 10-5" />Capas
+          </button>
+          <button onClick={reset} aria-label="Volver a la vista inicial" title="Volver a la vista inicial" className={boton + " px-2.5"}>
+            <Icono d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5" />
+          </button>
+          <button onClick={() => lab.set({ intro: true })} className={boton + " max-sm:hidden"}>Fuentes</button>
+        </div>
       </div>
 
-      {/* botones de móvil */}
-      <div className="absolute bottom-16 left-1/2 z-30 hidden -translate-x-1/2 gap-2 max-md:flex">
-        {([["izq", "Simulación · capas"], ["der", "Cifras"]] as const).map(([k, l]) => (
-          <button key={k} onClick={() => setMovil(movil === k ? null : k)}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold shadow-lg ${movil === k ? "bg-zafre text-white" : "bg-white text-zafre"}`}>{movil === k ? "Cerrar" : l}</button>
+      {/* móvil */}
+      <div className="absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 gap-1 rounded-full bg-white/90 p-1 shadow-lg backdrop-blur max-md:flex">
+        {([["izq", "Simulación"], ["der", "Cifras"]] as const).map(([k, l]) => (
+          <button key={k} onClick={() => { setMovil(movil === k ? null : k); setCapas(false); }} aria-pressed={movil === k}
+            className={`whitespace-nowrap rounded-full px-4 py-1.5 text-[13px] font-medium ${movil === k ? "bg-zafre text-white" : "text-zafre"}`}>{l}</button>
         ))}
       </div>
-
-      <footer className="absolute bottom-0 left-0 right-0 z-20 flex h-7 items-center justify-between gap-4 border-t border-gris-borde bg-white px-4 text-[11px] text-gris-medio">
-        <span className="truncate"><b className="text-zafre">Eafit-Lab</b> · Plataforma territorial del campus y su entorno</span>
-        <span className="hidden truncate md:inline">Datos: EAFIT (Informe de Sostenibilidad 2025, mapa oficial) · Alcaldía de Medellín · DANE · Metro · OpenStreetMap</span>
-        <button onClick={() => lab.set({ intro: true })} className="shrink-0 font-semibold text-zafre hover:underline">Acerca y fuentes</button>
-      </footer>
 
       {st.intro && <Intro />}
     </main>

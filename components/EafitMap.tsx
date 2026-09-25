@@ -25,7 +25,7 @@ const GRUPOS: Record<CapaId, string[]> = {
   pot: ["pot-fill", "pot-line", "pot-label"],
   espacio: ["ep-fill"],
   equipamientos: ["eq-fill", "eq-line"],
-  agua: ["agua", "rio"],
+  agua: ["agua"],
   radios: ["radios", "radios-label"],
   rutas: ["rutas-lineas"],
 };
@@ -99,8 +99,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
     (window as any).__map = map;
     (window as any).__lab = lab;
     // Los paneles laterales tapan los bordes: se centra la cámara en el hueco libre.
-    if (window.innerWidth > 768) map.setPadding({ left: 350, right: 360, top: 20, bottom: 0 });
-    map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
+    if (window.innerWidth > 768) map.setPadding({ left: 320, right: 340, top: 40, bottom: 0 });
 
     const J = (u: string) => fetch(u).then((r) => r.json());
     const datos = Promise.all([
@@ -162,18 +161,18 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       L({ id: "campus-fill", type: "fill", source: "campus", paint: { "fill-color": "#00A9E0", "fill-opacity": 0.1 } });
       L({ id: "oficial-fill", type: "fill", source: "oficial", paint: {
         "fill-color": ["match", ["get", "cat"], "porteria", OFICIAL_COLOR.porteria, "parqueadero", OFICIAL_COLOR.parqueadero, "deporte", OFICIAL_COLOR.deporte, OFICIAL_COLOR.alimentacion],
-        "fill-opacity": 0.35 } });
+        "fill-opacity": 0.22 } });
       L({ id: "oficial-line", type: "line", source: "oficial", paint: {
         "line-color": ["match", ["get", "cat"], "porteria", OFICIAL_COLOR.porteria, "parqueadero", OFICIAL_COLOR.parqueadero, "deporte", OFICIAL_COLOR.deporte, OFICIAL_COLOR.alimentacion],
-        "line-width": 1.2 } });
-      L({ id: "campus-line", type: "line", source: "campus", paint: { "line-color": "#00A9E0", "line-width": 2.2, "line-dasharray": [2, 1.2] } });
+        "line-width": 0.8, "line-opacity": 0.7 } });
+      L({ id: "campus-line", type: "line", source: "campus", paint: { "line-color": "#00A9E0", "line-width": 1.2, "line-opacity": 0.8 } });
       L({ id: "radios", type: "line", source: "radios", paint: { "line-color": "#BCE6FB", "line-width": 1.1, "line-dasharray": [3, 3], "line-opacity": 0.7 } });
       // --- redes
-      L({ id: "agua", type: "line", source: "agua", paint: { "line-color": "#45C6D8", "line-width": ["match", ["get", "kind"], "river", 4, 1.6], "line-opacity": 0.8 } });
-      L({ id: "rio", type: "line", source: "rio", paint: { "line-color": "#45C6D8", "line-width": 4, "line-opacity": 0.55 } });
-      L({ id: "bus-rutas", type: "line", source: "bus-rutas", paint: { "line-color": "#155FE7", "line-width": 1.4, "line-opacity": 0.55 } });
-      L({ id: "ciclo", type: "line", source: "ciclo", paint: { "line-color": "#46C69F", "line-width": 2, "line-dasharray": [1.5, 1] } });
-      L({ id: "metro-linea", type: "line", source: "metro-linea", paint: { "line-color": "#00A9E0", "line-width": 5 } });
+      L({ id: "agua", type: "line", source: "agua", paint: { "line-color": "#45C6D8", "line-width": ["match", ["get", "kind"], "river", 2.5, 1], "line-opacity": 0.55 } });
+      L({ id: "rio", type: "line", source: "rio", layout: { visibility: "none" }, paint: { "line-color": "#45C6D8", "line-width": 3, "line-opacity": 0.5 } });
+      L({ id: "bus-rutas", type: "line", source: "bus-rutas", paint: { "line-color": "#155FE7", "line-width": 0.9, "line-opacity": 0.35 } });
+      L({ id: "ciclo", type: "line", source: "ciclo", paint: { "line-color": "#46C69F", "line-width": 1.2, "line-opacity": 0.7, "line-dasharray": [2, 1.5] } });
+      L({ id: "metro-linea", type: "line", source: "metro-linea", paint: { "line-color": "#00A9E0", "line-width": 2.5, "line-opacity": 0.85 } });
       L({ id: "rutas-lineas", type: "line", source: "rutas-lineas", paint: {
         "line-color": ["match", ["get", "m"], ...MODOS.flatMap((m) => [m.id, m.color]), "#fff"],
         "line-width": 1.1, "line-opacity": 0.35 } });
@@ -194,22 +193,22 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
         "circle-radius": ["interpolate", ["linear"], ["zoom"], 14, 2.5, 18, 6],
         "circle-color": ["match", ["get", "cat"], ...Object.entries(POI_COLOR).flat(), "#fff"],
         "circle-stroke-color": "#0d0f14", "circle-stroke-width": 1 } });
-      L({ id: "paraderos", type: "circle", source: "paraderos", paint: { "circle-radius": 3.5, "circle-color": "#155FE7", "circle-stroke-color": "#fff", "circle-stroke-width": 1 } });
-      L({ id: "encicla", type: "circle", source: "encicla", paint: { "circle-radius": 5, "circle-color": "#46C69F", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5 } });
-      L({ id: "metro-est", type: "circle", source: "metro-est", paint: { "circle-radius": 8, "circle-color": "#FFFFFF", "circle-stroke-color": "#00A9E0", "circle-stroke-width": 4 } });
+      L({ id: "paraderos", type: "circle", source: "paraderos", minzoom: 15, paint: { "circle-radius": 2.5, "circle-color": "#155FE7", "circle-opacity": 0.8 } });
+      L({ id: "encicla", type: "circle", source: "encicla", paint: { "circle-radius": 4, "circle-color": "#46C69F", "circle-stroke-color": "#0b0c10", "circle-stroke-width": 1 } });
+      L({ id: "metro-est", type: "circle", source: "metro-est", paint: { "circle-radius": 5, "circle-color": "#FFFFFF", "circle-stroke-color": "#00A9E0", "circle-stroke-width": 2.5 } });
       L({ id: "agentes", type: "circle", source: "agentes", paint: {
-        "circle-radius": ["interpolate", ["linear"], ["zoom"], 13, 2.2, 16, 4, 18, 6.5],
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 13, 1.6, 16, 3, 18, 5],
         "circle-color": ["match", ["get", "m"], ...MODOS.flatMap((m) => [m.id, m.color]), "#fff"],
-        "circle-stroke-color": "#FFFFFF", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 14, 0.4, 17, 1.2] } });
+        "circle-blur": 0.15 } });
       // --- rótulos
-      const txt = { "text-font": ["Noto Sans Regular"], "text-size": 11 } as any;
-      const halo = { "text-color": "#FFFFFF", "text-halo-color": "#0d0f14", "text-halo-width": 1.4 };
+      const txt = { "text-font": ["Noto Sans Regular"], "text-size": 10.5, "text-letter-spacing": 0.02 } as any;
+      const halo = { "text-color": "rgba(255,255,255,0.85)", "text-halo-color": "rgba(11,12,16,0.85)", "text-halo-width": 1.2 };
       L({ id: "metro-label", type: "symbol", source: "metro-est", layout: { ...txt, "text-field": ["concat", "Metro ", ["get", "name"]], "text-offset": [0, 1.5], "text-size": 12 }, paint: halo });
       L({ id: "bloques-label", type: "symbol", source: "bloques-pt", minzoom: 15.2, layout: {
-        ...txt, "text-field": ["coalesce", ["get", "ref"], ["get", "name"]], "text-size": ["case", ["has", "ref"], 12, 10],
-        "text-max-width": 8, "symbol-z-order": "source" }, paint: { ...halo, "text-color": "#BCE6FB" } });
+        ...txt, "text-field": ["coalesce", ["get", "ref"], ""], "text-size": 11,
+        "text-max-width": 8, "symbol-z-order": "source" }, paint: { ...halo, "text-color": "#FFFFFF" } });
       L({ id: "oficial-label", type: "symbol", source: "oficial-pt", minzoom: 15.5, filter: ["==", ["get", "cat"], "porteria"], layout: {
-        ...txt, "text-field": ["get", "name"], "text-size": 10 }, paint: { ...halo, "text-color": "#F8D300" } });
+        ...txt, "text-field": ["concat", "P", ["slice", ["get", "name"], 9]], "text-size": 9.5 }, paint: { ...halo, "text-color": "#F8D300" } });
       L({ id: "pot-label", type: "symbol", source: "pot", layout: { ...txt, "text-field": ["get", "codigo_tramiento"], "text-size": 10 }, paint: halo });
       L({ id: "radios-label", type: "symbol", source: "radios", layout: {
         ...txt, "symbol-placement": "line", "text-field": ["concat", ["to-string", ["get", "r"]], " m · ~", ["to-string", ["get", "min"]], " min a pie"], "text-size": 10 },
@@ -350,7 +349,7 @@ function colorEdif(modo: "altura" | "campus"): any {
     return ["interpolate", ["linear"], ["get", "h"], 0, "#2c3a4f", 12, "#4458A6", 30, "#155FE7", 60, "#46C69F", 100, "#F8D300"];
   }
   return ["case", ["==", ["get", "c"], 1], "#00A9E0",
-    ["interpolate", ["linear"], ["get", "h"], 0, "#2a2d34", 30, "#474a52", 80, "#6D6E71"]];
+    ["interpolate", ["linear"], ["get", "h"], 0, "#2b2e35", 30, "#3f434c", 90, "#5d616b"]];
 }
 
 function aplicarEstado(map: MlMap, s: ReturnType<typeof lab.get>) {

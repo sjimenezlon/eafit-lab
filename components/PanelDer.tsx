@@ -9,16 +9,17 @@ const fmt = (n: number, d = 0) => n.toLocaleString("es-CO", { maximumFractionDig
 export default function PanelDer() {
   const st = useLab();
   return (
-    <div className="panel flex min-h-0 flex-1 flex-col overflow-hidden">
-      <div className="flex border-b border-gris-borde">
+    <div className="card flex min-h-0 flex-1 flex-col overflow-hidden">
+      <div className="flex gap-5 px-5 pt-4" role="tablist">
         {([["universidad", "Universidad"], ["entorno", "Entorno"], ["ficha", "Ficha"]] as const).map(([k, l]) => (
-          <button key={k} onClick={() => lab.set({ panelDer: k })} aria-pressed={st.panelDer === k}
-            className={`flex-1 py-2.5 text-[13px] font-semibold ${st.panelDer === k ? "border-b-2 border-zafre text-zafre" : "text-gris-medio hover:text-zafre"}`}>
-            {l}{k === "ficha" && st.seleccion ? " •" : ""}
+          <button key={k} role="tab" aria-selected={st.panelDer === k} onClick={() => lab.set({ panelDer: k })}
+            className={`relative pb-2 text-[12.5px] transition ${st.panelDer === k ? "font-medium text-zafre after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-zafre" : "text-[#8a8b8f] hover:text-zafre"}`}>
+            {l}{k === "ficha" && st.seleccion && <i className="absolute -right-2 top-0.5 h-1.5 w-1.5 rounded-full bg-azure" />}
           </button>
         ))}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto p-3.5 scroll-fino">
+      <div className="mx-5 border-b linea" />
+      <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4 scroll-fino">
         {st.panelDer === "universidad" && <Universidad />}
         {st.panelDer === "entorno" && <Entorno />}
         {st.panelDer === "ficha" && <Ficha />}
@@ -27,73 +28,75 @@ export default function PanelDer() {
   );
 }
 
-function Universidad() {
-  const [abierto, setAbierto] = useState<string | null>("Oferta académica");
+const Cifra = ({ k, v, n }: { k: string; v: string; n?: string }) => (
+  <div>
+    <div className="etq">{k}</div>
+    <div className="num text-[24px] font-light leading-tight tracking-tight text-zafre">{v}</div>
+    {n && <div className="text-[10.5px] leading-snug text-[#a0a1a5]">{n}</div>}
+  </div>
+);
+
+function Lista({ cifras }: { cifras: { k: string; v: string; nota?: string; fuente?: string }[] }) {
   return (
-    <div className="space-y-3">
-      <div>
-        <p className="font-mono text-[10.5px] font-semibold tracking-widest text-zafre/70">DESDE {INSTITUCION.fundacion.split(" ").pop()}</p>
-        <h2 className="text-[19px] font-extrabold leading-tight tracking-tight text-zafre">{INSTITUCION.nombre}</h2>
-        <p className="mt-1 text-[11.5px] leading-snug text-gris-medio">{INSTITUCION.naturaleza}. Rectora: {INSTITUCION.rectora}.</p>
-      </div>
-      <div className="rounded-lg bg-azure/15 px-3 py-2 text-[11.5px] leading-snug text-zafre">
-        <b>Acreditación institucional.</b> {INSTITUCION.acreditacion}.
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        {KPIS.map((c) => (
-          <div key={c.k} className="rounded-lg border border-gris-borde p-2.5">
-            <div className="text-[10px] font-semibold uppercase leading-tight tracking-wide text-gris-medio">{c.k}</div>
-            <div className="num font-mono text-[21px] font-bold text-zafre">{c.v}</div>
-            {c.nota && <div className="text-[10px] leading-tight text-gris-medio">{c.nota}</div>}
-          </div>
-        ))}
-      </div>
-      <div>
-        <p className="etq mb-1">Escuelas</p>
-        <div className="flex flex-wrap gap-1">
-          {INSTITUCION.escuelas.map((e) => <span key={e} className="rounded-full bg-[#F4F5F6] px-2 py-0.5 text-[11px] text-black/80">{e}</span>)}
+    <dl>
+      {cifras.map((c) => (
+        <div key={c.k} className="flex items-baseline justify-between gap-4 border-b linea py-2 last:border-0">
+          <dt className="text-[12px] leading-snug text-[#55565a]">
+            {c.fuente?.startsWith("http") ? <a href={c.fuente} target="_blank" rel="noreferrer" className="hover:text-zafre hover:underline">{c.k}</a> : c.k}
+            {c.nota && <span className="block text-[10.5px] text-[#a0a1a5]">{c.nota}</span>}
+          </dt>
+          <dd className="num shrink-0 text-right text-[13px] text-zafre">{c.v}</dd>
         </div>
-        <p className="mt-1.5 text-[11px] text-gris-medio">Sedes: {INSTITUCION.sedes.join(" · ")}</p>
+      ))}
+    </dl>
+  );
+}
+
+function Universidad() {
+  return (
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-[17px] font-semibold tracking-tight text-zafre">{INSTITUCION.nombre}</h2>
+        <p className="mt-1 text-[11.5px] leading-snug text-[#8a8b8f]">Fundada en 1960 · acreditada en alta calidad hasta 2036 · rectora {INSTITUCION.rectora.split(" (")[0]}</p>
       </div>
-      <div className="divide-y divide-gris-borde rounded-lg border border-gris-borde">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+        {KPIS.map((c) => <Cifra key={c.k} k={c.k.replace("Estudiantes de ", "")} v={c.v} n={c.nota} />)}
+      </div>
+      <div>
         {GRUPOS.map((g) => (
-          <div key={g.titulo}>
-            <button onClick={() => setAbierto(abierto === g.titulo ? null : g.titulo)} aria-expanded={abierto === g.titulo}
-              className="flex w-full items-center justify-between px-3 py-2 text-left text-[12.5px] font-bold text-zafre">
-              {g.titulo}<span className="text-gris-medio">{abierto === g.titulo ? "−" : "+"}</span>
-            </button>
-            {abierto === g.titulo && (
-              <dl className="space-y-1.5 px-3 pb-3">
-                {g.cifras.map((c) => (
-                  <div key={c.k} className="flex items-baseline justify-between gap-3">
-                    <dt className="text-[11.5px] leading-snug text-black/75">
-                      {c.fuente ? <a href={c.fuente} target="_blank" rel="noreferrer" className="hover:underline">{c.k}</a> : c.k}
-                      {c.nota && <span className="block text-[10px] text-gris-medio">{c.nota}</span>}
-                    </dt>
-                    <dd className="num shrink-0 text-right font-mono text-[12.5px] font-bold text-zafre">{c.v}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-          </div>
+          <details key={g.titulo} className="group border-t linea" open={g.titulo === "Campus Medellín"}>
+            <summary className="flex cursor-pointer items-center justify-between py-2.5 text-[12.5px] font-medium text-[#1d1d24]">
+              {g.titulo}<span className="text-[#a0a1a5] transition group-open:rotate-45">+</span>
+            </summary>
+            <div className="pb-2"><Lista cifras={g.cifras} /></div>
+          </details>
         ))}
+        <details className="group border-t linea">
+          <summary className="flex cursor-pointer items-center justify-between py-2.5 text-[12.5px] font-medium text-[#1d1d24]">
+            Escuelas y sedes<span className="text-[#a0a1a5] transition group-open:rotate-45">+</span>
+          </summary>
+          <ul className="pb-3 text-[12px] leading-relaxed text-[#55565a]">
+            {INSTITUCION.escuelas.map((e) => <li key={e}>Escuela de {e}</li>)}
+            <li className="mt-1.5 text-[11px] text-[#a0a1a5]">Sedes: {INSTITUCION.sedes.map((x) => x.split(" (")[0]).join(", ")}</li>
+          </ul>
+        </details>
       </div>
-      <p className="text-[10.5px] leading-snug text-gris-medio">
-        Fuente principal: <a className="underline" href={INFORME_2025} target="_blank" rel="noreferrer">Informe de Sostenibilidad EAFIT 2025</a>. Consultado el 25-sep-2026.
+      <p className="text-[10.5px] leading-snug text-[#a0a1a5]">
+        Fuente: <a className="underline" href={INFORME_2025} target="_blank" rel="noreferrer">Informe de Sostenibilidad EAFIT 2025</a>. Consultado el 25-sep-2026.
       </p>
     </div>
   );
 }
 
-function Barras({ datos, color, sufijo = "" }: { datos: { k: string; v: number; c?: string }[]; color?: string; sufijo?: string }) {
+function Barras({ datos, color }: { datos: { k: string; v: number; c?: string }[]; color?: string }) {
   const max = Math.max(...datos.map((d) => d.v), 1);
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       {datos.map((d) => (
-        <div key={d.k} className="grid grid-cols-[72px_1fr_52px] items-center gap-2 text-[11px]">
-          <span className="truncate text-black/75">{d.k}</span>
-          <span className="h-2.5 rounded-sm bg-[#F0F1F2]"><span className="block h-full rounded-sm" style={{ width: `${(d.v / max) * 100}%`, background: d.c || color }} /></span>
-          <span className="num text-right font-mono text-gris-medio">{fmt(d.v)}{sufijo}</span>
+        <div key={d.k} className="grid grid-cols-[76px_1fr_44px] items-center gap-2 text-[11px]">
+          <span className="truncate text-[#55565a]">{d.k}</span>
+          <span className="h-[3px] rounded-full bg-[#efeff0]"><span className="block h-full rounded-full" style={{ width: `${(d.v / max) * 100}%`, background: d.c || color }} /></span>
+          <span className="num text-right text-[#8a8b8f]">{fmt(d.v)}</span>
         </div>
       ))}
     </div>
@@ -103,84 +106,50 @@ function Barras({ datos, color, sufijo = "" }: { datos: { k: string; v: number; 
 function Entorno() {
   const [r, setR] = useState<any>(null);
   useEffect(() => { fetch("/data/resumen.json").then((x) => x.json()).then(setR); }, []);
-  if (!r) return <p className="text-[12px] text-gris-medio">Cargando…</p>;
+  if (!r) return <p className="text-[12px] text-[#8a8b8f]">Cargando…</p>;
   const pob = r.poblacion_2018;
   const ee = r.estrato_energia_viv;
   const eeTot = Object.values(ee).reduce((a: number, b: any) => a + b, 0) as number;
-  const tile = (k: string, v: string, n?: string) => (
-    <div className="rounded-lg border border-gris-borde p-2.5">
-      <div className="text-[10px] font-semibold uppercase leading-tight tracking-wide text-gris-medio">{k}</div>
-      <div className="num font-mono text-[19px] font-bold text-zafre">{v}</div>
-      {n && <div className="text-[10px] leading-tight text-gris-medio">{n}</div>}
-    </div>
-  );
   return (
-    <div className="space-y-3.5">
+    <div className="space-y-5">
       <div>
-        <p className="font-mono text-[10.5px] font-semibold tracking-widest text-zafre/70">RADIO DE 1,5 KM</p>
-        <h2 className="text-[17px] font-extrabold leading-tight tracking-tight text-zafre">El campus y su vecindario</h2>
-        <p className="mt-1 text-[11.5px] leading-snug text-gris-medio">El círculo toma parte de El Poblado, Guayabal y el norte de Envigado, con el río Medellín en medio.</p>
+        <h2 className="text-[17px] font-semibold tracking-tight text-zafre">1,5 km alrededor</h2>
+        <p className="mt-1 text-[11.5px] leading-snug text-[#8a8b8f]">Parte de El Poblado, Guayabal y el norte de Envigado, con el río Medellín en medio.</p>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        {tile("Habitantes (2018)", fmt(pob.personas), `${fmt(pob.viviendas)} viviendas · ${fmt(pob.hogares)} hogares`)}
-        {tile("Edificios", fmt(r.edificios.n), `${fmt(r.edificios.mas_de_20_pisos)} con más de 60 m`)}
-        {tile("Altura máxima", `${fmt(r.edificios.h_max, 0)} m`, `media ${fmt(r.edificios.h_media, 1)} m`)}
-        {tile("Campus EAFIT", `${fmt(r.edificios.campus_n)} volúmenes`, `el más alto mide ${fmt(r.edificios.campus_h_max, 0)} m`)}
-      </div>
-
-      <div>
-        <p className="etq mb-1.5">Edad de los vecinos (censo 2018)</p>
-        <Barras datos={r.edad_2018.map((d: any) => ({ k: d.g + " años", v: d.v }))} color="#155FE7" />
-        <p className="mt-1 text-[10.5px] text-gris-medio">{fmt((pob.superior + pob.posgrado) / pob.personas * 100, 0)} % de los habitantes tiene educación superior o posgrado.</p>
+      <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+        <Cifra k="Habitantes" v={fmt(pob.personas)} n="censo DANE 2018" />
+        <Cifra k="Edificios" v={fmt(r.edificios.n)} n={`el más alto, ${fmt(r.edificios.h_max, 0)} m`} />
+        <Cifra k="Árboles" v={fmt(r.arboles.n)} n={`${r.arboles.especies_area} especies`} />
+        <Cifra k="Espacio público" v={`${fmt(r.espacio_publico.ha, 1)} ha`} n={`${r.espacio_publico.n} parques y zonas`} />
       </div>
 
       <div>
-        <p className="etq mb-1.5">Viviendas por estrato (factura de energía)</p>
-        <div className="flex h-3 overflow-hidden rounded-sm">
+        <p className="etq mb-2">Edad de los vecinos</p>
+        <Barras datos={r.edad_2018.map((d: any) => ({ k: d.g + " años", v: d.v }))} color="#000066" />
+        <p className="mt-2 text-[10.5px] text-[#a0a1a5]">{fmt((pob.superior + pob.posgrado) / pob.personas * 100, 0)} % tiene educación superior o posgrado.</p>
+      </div>
+
+      <div>
+        <p className="etq mb-2">Viviendas por estrato</p>
+        <div className="flex h-1.5 overflow-hidden rounded-full">
           {Object.entries(ee).map(([k, v]: any) => <div key={k} title={`Estrato ${k}: ${fmt(v)}`} style={{ width: `${(v / eeTot) * 100}%`, background: ESTRATO_COLOR[+k - 1] }} />)}
         </div>
-        <div className="mt-1 flex flex-wrap gap-x-2.5 text-[10.5px] text-gris-medio">
-          {Object.entries(ee).map(([k, v]: any) => <span key={k}><i className="mr-1 inline-block h-2 w-2 rounded-sm" style={{ background: ESTRATO_COLOR[+k - 1] }} />E{k} {fmt((v / eeTot) * 100, 0)} %</span>)}
+        <div className="mt-1.5 flex flex-wrap gap-x-3 text-[10.5px] text-[#8a8b8f]">
+          {Object.entries(ee).filter(([, v]: any) => v / eeTot >= 0.01).map(([k, v]: any) => <span key={k} className="num">E{k} · {fmt((v / eeTot) * 100, 0)} %</span>)}
         </div>
       </div>
 
       <div>
-        <p className="etq mb-1.5">Lugares con nombre (OpenStreetMap)</p>
-        <Barras datos={Object.entries(r.poi).sort((a: any, b: any) => b[1] - a[1]).map(([k, v]: any) => ({ k: POI_LABEL[k], v, c: POI_COLOR[k] }))} />
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        {tile("Árboles urbanos", fmt(r.arboles.n), `${fmt(r.arboles.especies_area)} especies registradas`)}
-        {tile("Espacio público", `${fmt(r.espacio_publico.ha, 1)} ha`, `${r.espacio_publico.n} parques y zonas`)}
-        {tile("Metro", r.transporte.metro_estaciones.join(" · "), "Línea A")}
-        {tile("Bus y bici", `${r.transporte.rutas_bus} rutas`, `${r.transporte.paraderos} paraderos · ${fmt(r.transporte.ciclorrutas_km, 1)} km de ciclorruta`)}
+        <p className="etq mb-2">Lugares con nombre</p>
+        <Barras datos={Object.entries(r.poi).sort((a: any, b: any) => b[1] - a[1]).slice(0, 6).map(([k, v]: any) => ({ k: POI_LABEL[k], v, c: POI_COLOR[k] }))} />
       </div>
 
       <div>
-        <p className="etq mb-1">Especies más comunes en el campus (SAU)</p>
-        <ol className="space-y-0.5 text-[11.5px]">
-          {r.arboles.top_campus.slice(0, 5).map((t: any) => (
-            <li key={t.sp} className="flex justify-between"><i className="text-black/80">{t.sp}</i><span className="num font-mono text-gris-medio">{t.n}</span></li>
-          ))}
-        </ol>
+        <p className="etq mb-1">Comuna 14 · El Poblado</p>
+        <Lista cifras={ENTORNO_OFICIAL} />
       </div>
-
-      <div className="rounded-lg border border-gris-borde p-3">
-        <p className="etq mb-1.5">Comuna 14 · El Poblado</p>
-        <dl className="space-y-1.5">
-          {ENTORNO_OFICIAL.map((c) => (
-            <div key={c.k} className="flex items-baseline justify-between gap-3">
-              <dt className="text-[11.5px] leading-snug text-black/75">
-                {c.fuente?.startsWith("http") ? <a href={c.fuente} target="_blank" rel="noreferrer" className="hover:underline">{c.k}</a> : c.k}
-                {c.nota && <span className="block text-[10px] text-gris-medio">{c.nota}</span>}
-              </dt>
-              <dd className="num shrink-0 font-mono text-[12.5px] font-bold text-zafre">{c.v}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-      <p className="text-[10.5px] leading-snug text-gris-medio">
-        La población es del Censo 2018 del DANE, prorrateada por área de manzana dentro del círculo. Es el último censo: el conteo de 2025 se canceló.
+      <p className="text-[10.5px] leading-snug text-[#a0a1a5]">
+        Transporte en el radio: Metro {r.transporte.metro_estaciones.join(" y ")}, {r.transporte.rutas_bus} rutas de bus, {fmt(r.transporte.ciclorrutas_km, 1)} km de ciclorruta. Población prorrateada por área de manzana; el censo de 2018 es el último.
       </p>
     </div>
   );
@@ -190,28 +159,24 @@ function Ficha() {
   const st = useLab();
   const s = st.seleccion;
   if (!s) {
-    return (
-      <div className="py-8 text-center text-[12.5px] leading-relaxed text-gris-medio">
-        Haga clic en un edificio, una manzana, un árbol, una portería o un agente para ver su ficha.
-      </div>
-    );
+    return <p className="py-10 text-center text-[12px] leading-relaxed text-[#8a8b8f]">Toque un edificio, una manzana, un árbol,<br />una portería o un agente.</p>;
   }
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       <div>
-        <p className="font-mono text-[10.5px] font-semibold uppercase tracking-widest text-zafre/70">{s.tipo}</p>
-        <h2 className="text-[18px] font-extrabold leading-tight tracking-tight text-zafre">{s.titulo}</h2>
+        <p className="etq">{s.tipo}</p>
+        <h2 className="mt-0.5 text-[17px] font-semibold leading-tight tracking-tight text-zafre">{s.titulo}</h2>
       </div>
-      <dl className="divide-y divide-gris-borde rounded-lg border border-gris-borde">
+      <dl>
         {s.filas.map(([k, v], i) => (
-          <div key={i} className={`flex items-baseline gap-3 px-3 py-2 text-[12px] ${k ? "justify-between" : ""}`}>
-            {k && <dt className="text-gris-medio">{k}</dt>}
-            <dd className={`${k ? "num text-right font-mono font-semibold text-zafre" : "text-black/80"}`}>{v}</dd>
+          <div key={i} className={`flex items-baseline gap-4 border-b linea py-2 text-[12px] last:border-0 ${k ? "justify-between" : ""}`}>
+            {k && <dt className="text-[#8a8b8f]">{k}</dt>}
+            <dd className={k ? "num text-right text-zafre" : "text-[#55565a]"}>{v}</dd>
           </div>
         ))}
       </dl>
-      {s.nota && <p className="text-[10.5px] leading-snug text-gris-medio">{s.nota}</p>}
-      <button onClick={() => lab.set({ seleccion: null })} className="text-[11.5px] font-semibold text-zafre underline">Limpiar selección</button>
+      {s.nota && <p className="text-[10.5px] leading-snug text-[#a0a1a5]">{s.nota}</p>}
+      <button onClick={() => lab.set({ seleccion: null })} className="text-[11.5px] text-zafre hover:underline">Limpiar</button>
     </div>
   );
 }
