@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --eafit-zafre: #000066;
+  --eafit-azure: #00A9E0;
+  --eafit-negro: #000000;
+  --eafit-blanco: #ffffff;
+  --eafit-gris: #6d6e71;
+}
+html, body { height: 100%; margin: 0; background: #0d0f14; color: #000; font-family: Inter, Arial, system-ui, sans-serif; letter-spacing: -0.01em; }
+.maplibregl-ctrl-attrib { font-size: 10px; }
+.maplibregl-ctrl-scale { background: rgba(255,255,255,.85); border-color: #000066; color: #000066; }
+.num { font-variant-numeric: tabular-nums; }
+.panel { background: rgba(255,255,255,.97); border: 1px solid #E4E5E6; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,.35); }
+.etq { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #6d6e71; font-weight: 600; }
+.scroll-fino::-webkit-scrollbar { width: 6px; }
+.scroll-fino::-webkit-scrollbar-thumb { background: #CFD1D2; border-radius: 3px; }
+input[type=range].desliz { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: #E4E5E6; outline: none; }
+input[type=range].desliz::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--c, #000066); border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.25); cursor: pointer; }
+input[type=range].desliz::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--c, #000066); border: 2px solid #fff; cursor: pointer; }
+button:focus-visible, input:focus-visible { outline: 2px solid #00A9E0; outline-offset: 2px; }

@@ -1,0 +1,812 @@
+{
+  "_meta": {
+    "fecha_consulta": "2026-09-25",
+    "elaborado_para": "gemelo digital EAFIT sede Medellín (Cra 49 #7 Sur-50, La Aguacatala, El Poblado)",
+    "fuente_principal": "Informe de Sostenibilidad EAFIT 2025 (PDF 369 págs., publicado 2026). Páginas citadas = número de página del PDF, no el folio impreso.",
+    "advertencias": [
+      "EAFIT en cifras (https://www.eafit.edu.co/eafit-en-cifras) es un portal de tableros SharePoint con ingreso privado: no se pudo leer ninguna cifra desde allí.",
+      "Hacia el final de la sesión eafit.edu.co empezó a devolver 403/Incapsula a las consultas automáticas; varias páginas (movilidad, infraestructura, historia de la biblioteca, Edificio de Ciencias) no se pudieron leer.",
+      "No existe en la web pública un listado oficial completo de bloques 1..38: el mapa oficial (uMap) solo trae capas de parqueaderos, porterías, espacios deportivos y alimentación. La lista de bloques de abajo está incompleta y solo recoge lo verificado."
+    ]
+  },
+  "1_institucional": {
+    "anio_fundacion": {
+      "valor": 1960,
+      "corte": "4-may-1960",
+      "fuente": "https://es.wikipedia.org/wiki/Universidad_EAFIT (cita eafit.edu.co/institucional/historia/60/Paginas/decada60.aspx)",
+      "nota": "Creada el 4-may-1960 como Escuela de Administración y Finanzas (EAF); reconocida como Fundación por MinEducación el 11-jun-1960; clases desde el 17-ago-1960 con 59 alumnos. La fuente primaria de EAFIT (década 1960) solo se vio citada, no se leyó.",
+      "confirmado": true
+    },
+    "acreditacion_institucional": {
+      "valor": {
+        "anios": 10,
+        "resolucion": "016360",
+        "fecha_resolucion": "2026-06-23",
+        "vigencia_hasta": 2036,
+        "numero_acreditacion": 4
+      },
+      "corte": "jun-2026",
+      "fuente": "https://www.universidad.edu.co/universidad-eafit-obtiene-reacreditacion-institucional-por-10-anos/ (2-jul-2026); el pie de página de eafit.edu.co dice 'Universidad con Acreditación Institucional hasta 2036' (https://www.eafit.edu.co/tarifas-de-programas-de-pregrado)",
+      "nota": "Es la cuarta acreditación: 2003 (6 años), 2010 (8), 2018 (8) y 2026 (10). Es una de 9 IES colombianas con 10 años, la 4.ª universidad privada del país y la 1.ª privada de Antioquia con ese plazo. El número de resolución viene del medio El Observatorio de la Universidad Colombiana; el PDF de la resolución no se leyó.",
+      "confirmado": true
+    },
+    "rector": {
+      "valor": "Claudia Patricia Restrepo Montoya",
+      "corte": "rectora desde 2021; ratificada 28-may-2025 para ene-2026 a dic-2030",
+      "fuente": "https://www.eafit.edu.co/institucional/comunicados-institucionales/comunicados-2025/claudia-restrepo-continuara-como-rectora-de-EAFIT-periodo-2026-2030 ; https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 5; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Primera mujer en la rectoría.",
+      "confirmado": true
+    },
+    "naturaleza_juridica": {
+      "valor": "Institución de educación superior privada, de utilidad común y sin ánimo de lucro, con carácter de fundación. Carácter académico: universidad.",
+      "corte": "vigente",
+      "fuente": "https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2021/informacion-preliminar (resultado de búsqueda) ; Wikipedia 'tipo = Privada'",
+      "nota": "El texto se tomó del snippet del buscador, no de una lectura completa de la página. No se confirmó el código SNIES de la institución (1216 NO verificado).",
+      "confirmado": true
+    },
+    "codigo_snies_institucion": {
+      "valor": null,
+      "corte": "",
+      "fuente": "",
+      "nota": "No verificado. Consultar en https://hecaa.mineducacion.gov.co/consultaspublicas/ies",
+      "confirmado": false
+    },
+    "escuelas": {
+      "valor": [
+        "Escuela de Administración",
+        "Escuela de Ciencias Aplicadas e Ingeniería",
+        "Escuela de Artes y Humanidades",
+        "Escuela de Derecho",
+        "Escuela de Finanzas, Economía y Gobierno"
+      ],
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 18; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Son 5 escuelas y 2 sistemas transversales: Aprendizaje, y Ciencia, Tecnología e Innovación (CTeI). Decanos 2025: Ricardo Taborda Ríos (Ciencias Aplicadas e Ingeniería), Verónica Uribe Hanabergh (Artes y Humanidades), Esteban Hoyos Ceballos (Derecho), María Andrea De Villa Correa (Administración).",
+      "confirmado": true
+    },
+    "sedes": {
+      "valor": [
+        {
+          "nombre": "EAFIT Medellín (principal)",
+          "direccion": "Carrera 49 N° 7 Sur-50"
+        },
+        {
+          "nombre": "EAFIT Llanogrande",
+          "direccion": "Km 3.5 vía Don Diego, Rionegro",
+          "nota": "inaugurada en 1997 según Wikipedia (sin verificar); oferta de posgrados, idiomas y formación avanzada"
+        },
+        {
+          "nombre": "EAFIT Bogotá",
+          "direccion": "Carrera 15 #88-64 oficina 401"
+        },
+        {
+          "nombre": "EAFIT Pereira",
+          "direccion": "Carrera 19 #12-70 Megacentro Pinares",
+          "nota": "inaugurada en 1995 según Wikipedia"
+        }
+      ],
+      "corte": "2026",
+      "fuente": "https://www.eafit.edu.co/en/eafit-campus ; pie de página de https://www.eafit.edu.co/tarifas-de-programas-de-pregrado ; https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 18; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "El informe 2025 también muestra Cali y Popayán, pero solo con programas en convenio, no como sedes propias.",
+      "confirmado": true
+    }
+  },
+  "2_comunidad": {
+    "estudiantes_pregrado": {
+      "valor": {
+        "2025-1": 9831,
+        "2025-2": 9639
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 37; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Hay una inconsistencia interna: la infografía de la pág. 16 dice 9.619 para 2025-2 y la pág. 37 dice 9.639. La pág. 30 lo redondea a 9.700. Estudiantes nuevos en 2025: 1.167 (2025-1) + 797 (2025-2) = 1.964.",
+      "confirmado": true
+    },
+    "estudiantes_posgrado": {
+      "valor": {
+        "2025-1": 3181,
+        "2025-2": 3123
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 37; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Nuevos en 2025: 1.155 + 1.000 = 2.155.",
+      "confirmado": true
+    },
+    "estudiantes_formales_total_aprox": {
+      "valor": 13012,
+      "corte": "2025-1 (9.831 + 3.181)",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 37; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Suma calculada de pregrado y posgrado en 2025-1. El Observatorio de la Universidad Colombiana (jul-2026) habla de unos 13.000 matriculados activos.",
+      "confirmado": true
+    },
+    "estudiantes_todos_los_ciclos": {
+      "valor": "+65.000",
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 16; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Incluye educación continua (20.748), Idiomas (12.777, sin Sislenguas), Nodo (10.565), Saberes de Vida (745), Universidad de los Niños (378) y 7.030 estudiantes virtuales. NO son estudiantes presenciales en el campus a la vez.",
+      "confirmado": true
+    },
+    "procedencia_pregrado": {
+      "valor": {
+        "Medellin_y_AM_pct": 63.9,
+        "otros_municipios_Antioquia_pct": 5.5,
+        "resto_pais_pct": 26.9,
+        "otros_paises_pct": 3.7
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 37; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "profesores_total": {
+      "valor": 2363,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 16; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Por tipo: 350 de planta; 752 de cátedra de pregrado; 472 de posgrado; 506 de educación continua; 273 de idiomas (pág. 30). La infografía de la pág. 16 agrupa 1.740 de cátedra.",
+      "confirmado": true
+    },
+    "profesores_planta": {
+      "valor": 350,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 30; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "profesores_planta_con_doctorado_pct": {
+      "valor": 76,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 30; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "El 23,4 % de los profesores de planta tiene maestría como título máximo. Entre los de cátedra, 11 % tiene doctorado y 75 % maestría.",
+      "confirmado": true
+    },
+    "colaboradores_administrativos": {
+      "valor": 1486,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 16; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "'Colaboradores' incluye aprendices. Empleos directos: 7.359; indirectos: 2.871 (sin contar profesores por honorarios). Los 4.488 que aparecen en la infografía no tienen un rótulo claro.",
+      "confirmado": true
+    },
+    "graduados_totales": {
+      "valor": 70383,
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 30; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Graduados de pregrado y posgrado entregados en 2025: 3.533.",
+      "confirmado": true
+    }
+  },
+  "3_oferta": {
+    "pregrados": {
+      "valor": 27,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 18; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Una búsqueda devolvió 25 pregrados, pero de fuente vieja o secundaria. Se usa la cifra del informe 2025.",
+      "confirmado": true
+    },
+    "especializaciones": {
+      "valor": 48,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 18; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "4 son virtuales.",
+      "confirmado": true
+    },
+    "maestrias": {
+      "valor": 62,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 18; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "4 son virtuales.",
+      "confirmado": true
+    },
+    "doctorados": {
+      "valor": 7,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 18; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "El Doctorado en Derecho es nuevo en 2025.",
+      "confirmado": true
+    },
+    "programas_acreditados": {
+      "valor": {
+        "total": 33,
+        "pregrado": 20,
+        "doctorados": 2,
+        "maestrias": 11,
+        "en_proceso": 17
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 57; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "El Observatorio U. Colombiana (jul-2026) habla de 31 programas acreditados, así que la cifra puede haber cambiado. 63 % de los programas acreditables de Medellín están acreditados.",
+      "confirmado": true
+    },
+    "educacion_continua_programas": {
+      "valor": 854,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 18; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "449 corporativos, 314 abiertos, 91 de Saberes de Vida.",
+      "confirmado": true
+    }
+  },
+  "4_investigacion": {
+    "grupos_investigacion_minciencias": {
+      "valor": {
+        "total": 29,
+        "A1_pct": 69,
+        "A_pct": 17
+      },
+      "corte": "Informe 2025 (medición Conv. 957 de 2024)",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 19; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "29 × 69 % ≈ 20 grupos A1 y 29 × 17 % ≈ 5 A. Coincide con el listado PRELIMINAR de la Convocatoria 957 (11-mar-2025), donde parseé 28 grupos EAFIT: A1 = 20, A = 5, B = 1, C = 2 (https://minciencias.gov.co/sites/default/files/convocatoria/listado_resultados_preliminares_-_convocatoria_957_de_2024_-_grupos.pdf). El informe se presenta como 'primera universidad privada del país según el número de grupos de investigación'.",
+      "confirmado": true
+    },
+    "investigadores_reconocidos_minciencias": {
+      "valor": null,
+      "corte": "",
+      "fuente": "https://minciencias.gov.co/la-ciencia-en-cifras/estadisticas-generales",
+      "nota": "No encontrado. El informe 2025 no trae el número de investigadores reconocidos (Emérito/Sénior/Asociado/Junior).",
+      "confirmado": false
+    },
+    "patentes": {
+      "valor": 74,
+      "corte": "acumulado a 2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 19; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "También reporta 378 acuerdos de licenciamiento, más de 50 tecnologías transferidas y 30 secretos empresariales.",
+      "confirmado": true
+    },
+    "spin_offs": {
+      "valor": 8,
+      "corte": "acumulado a 2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 19; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "publicaciones_scopus": {
+      "valor": {
+        "total": 334,
+        "Q1": 200,
+        "Q2": 55,
+        "Q3": 37,
+        "Q4": 23,
+        "otros": 19
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 19; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "semilleros": {
+      "valor": {
+        "semilleros": 82,
+        "semilleristas": 1121
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 19; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "proyectos_CTeI_gestionados": {
+      "valor": 378,
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 19; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "QS_World": {
+      "valor": {
+        "edicion_2026": "951-1000",
+        "puesto_Colombia_2026": 5,
+        "edicion_2021": "801-1000"
+      },
+      "corte": "QS WUR 2026",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 20; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "QS_World_2027": {
+      "valor": "1001-1200",
+      "corte": "QS WUR 2027 (publicado ~jun-2026)",
+      "fuente": "https://xuanxiao.org/en/universities/universidad-eafit",
+      "nota": "Solo lo confirma un agregador de terceros; topuniversities.com devolvió 403. Hay que verificarlo en topuniversities.com.",
+      "confirmado": false
+    },
+    "QS_Latinoamerica": {
+      "valor": {
+        "edicion_2026": 57,
+        "puesto_Colombia_2026": 7,
+        "edicion_2021": 56
+      },
+      "corte": "QS LatAm & Caribe 2026",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 20; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "THE": {
+      "valor": {
+        "mundial_2025": "1501+",
+        "latam_2025": "126-150",
+        "Colombia_latam_2025": 8
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 20; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "otros": {
+      "valor": {
+        "QS_Maestria_Finanzas_2025": "151+ (1.º Colombia)",
+        "QS_MBA_2025": "251+ (1.º Colombia)",
+        "QS_Maestria_Mercadeo_2025": "101+ (1.º Colombia)",
+        "QS_Social_Sciences_Management_2025": "401-450",
+        "Merco_Colombia_2025": 28,
+        "GreenMetric_2025": "9.º Colombia, 18.º LatAm"
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 20; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025) ; GreenMetric: https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 257; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    }
+  },
+  "5_campus": {
+    "area_total_m2": {
+      "valor": 126058,
+      "corte": "dic-2025",
+      "fuente": "https://www.eafit.edu.co/en/eafit-campus ; https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Cubre 'Campus principal + Guayabos'. La página web dice 126.052,06 m² y el informe 126.058 m². Hay una cifra vieja de Wikipedia (148.339 m², 2021) que ya NO se debe usar. En hectáreas son unas 12,6 ha.",
+      "confirmado": true
+    },
+    "zonas_verdes_m2": {
+      "valor": 48346.15,
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "area_construida_m2": {
+      "valor": 96260.97,
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "otros_espacios_m2": {
+      "valor": 36121.49,
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "biblioteca_m2": {
+      "valor": 6232.5,
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Una fuente secundaria (resultado de búsqueda) da 6.500 m² construidos para el edificio de la biblioteca (construido en 1998 e inaugurado a comienzos de 1999).",
+      "confirmado": true
+    },
+    "espacios_deportivos_m2": {
+      "valor": 15849.39,
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "espacios_aprendizaje": {
+      "valor": {
+        "aulas": 200,
+        "aulas_taller": 8,
+        "auditorios": 7,
+        "talleres": 4,
+        "laboratorios": 61,
+        "camaras_gesell": 2,
+        "salas_computo": 24,
+        "salas_estudio": 48,
+        "cubiculos_investigacion": 32,
+        "cubiculos_musica": 25,
+        "computadores_estudiantes": 1839
+      },
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "presupuesto_planta_fisica_2025": {
+      "valor": "≈ COP 52.000 millones",
+      "corte": "dic-2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    },
+    "numero_bloques": {
+      "valor": null,
+      "corte": "",
+      "fuente": "",
+      "nota": "No hay una cifra oficial publicada. La numeración conocida llega hasta el 38. El bloque 3 fue desmontado en 2024-2025 y hoy es el Parque Origen, así que la numeración no equivale al número de edificios.",
+      "confirmado": false
+    },
+    "flora": {
+      "valor": {
+        "especies_arboles_y_palmas": 139,
+        "especies_no_arboreas": 172,
+        "individuos_inventariados": 1568,
+        "pct_especies_nativas": 54
+      },
+      "corte": "inventario biótico (sin fecha en la página; se basa en el inventario forestal GAIA 2019)",
+      "fuente": "https://www.eafit.edu.co/sostenibilidad-ambiental/vegetacion-y-fauna ; https://www.eafit.edu.co/universidad-parque/inventario-biotico ; https://vivirenelpoblado.com/biodiversidad-eafit-inventario-plantas-y-animales/",
+      "nota": "Los 1.568 individuos suman el campus principal y el sector de Idiomas. Ese dato y el 54 % de nativas salen de Vivir en El Poblado y de la página en inglés, vistos en el resumen del buscador. EAFIT se presenta como 'Universidad Parque', no como jardín botánico registrado: no encontré ninguna fuente que diga que EAFIT es un jardín botánico.",
+      "confirmado": true
+    },
+    "fauna": {
+      "valor": {
+        "mamiferos": 13,
+        "reptiles": 8,
+        "anfibios": 2,
+        "aves": 74,
+        "aves_migratorias": 13
+      },
+      "corte": "inventario biótico (sin fecha)",
+      "fuente": "https://www.eafit.edu.co/sostenibilidad-ambiental/vegetacion-y-fauna",
+      "nota": "",
+      "confirmado": true
+    },
+    "biblioteca_coleccion": {
+      "valor": {
+        "ejemplares_impresos": 481780,
+        "titulos_digitales": 795392,
+        "bases_de_datos": 82,
+        "adquisiciones_2025": 12563,
+        "consultas_2025": 1763205,
+        "visitas_2025": 43200
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 277; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "El diagrama del PDF está en dos columnas y la asignación de cifras a rótulos se hizo por posición: 481.780 y 795.392 salen claros; en consultas y visitas conviene revisar la pág. 277.",
+      "confirmado": true
+    },
+    "auditorio_fundadores": {
+      "valor": {
+        "aforo": 630,
+        "bloque": 27,
+        "inaugurado": 1987
+      },
+      "corte": "may-2026",
+      "fuente": "https://www.elcolombiano.com/cultura/auditorio-fundadores-eafit-orquesta-sinfonica-LN37090319 (28-may-2026) ; bloque: https://repository.eafit.edu.co/items/8e69e58c-0a9e-4ba0-9f53-bcf4338f816a (título 'Bloque 27 y Auditorio Fundadores') ; año: Wikipedia",
+      "nota": "El aforo lo da El Colombiano y la página oficial de EAFIT del auditorio da 404/403. El Colombiano lo describe como 'la sala cultural más grande del sur del Valle de Aburrá'.",
+      "confirmado": true
+    },
+    "otros_auditorios": {
+      "valor": [
+        {
+          "nombre": "2 auditorios del Bloque 38",
+          "aforo_cada_uno": 160,
+          "corte": "2004"
+        },
+        {
+          "nombre": "Sala de Audición Musical (Biblioteca, piso 3)",
+          "aforo": 36
+        }
+      ],
+      "corte": "2004 / vigente",
+      "fuente": "https://www.eltiempo.com/archivo/documento/mam-1512038 ; https://www.eafit.edu.co/centro-cultural-biblioteca-luis-echavarria-villegas/espacios",
+      "nota": "En total hay 7 auditorios (informe 2025, pág. 258). No se encontró el aforo de los otros auditorios.",
+      "confirmado": true
+    },
+    "parqueaderos": {
+      "valor": {
+        "celdas_autos": 1042,
+        "celdas_motos": 459,
+        "bici_parqueos": 448,
+        "ingreso_diario_vehiculos_promedio": 2645,
+        "ingreso_diario_motos_promedio": 899,
+        "ingreso_diario_vehiculos_cero_emisiones": 729
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 257; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Zonas de parqueo según el mapa oficial: Norte, Profesores/directivos/empleados, Argos, Sur (autos y motos) y Parque Los Guayabos (autos y motos).",
+      "confirmado": true
+    },
+    "porterias": {
+      "valor": 10,
+      "corte": "vigente",
+      "fuente": "https://umap.openstreetmap.de/en/map/universidad-eafit-campus-medellin_67039 (mapa oficial embebido en https://www.eafit.edu.co/campus-eafit/mapa)",
+      "nota": "Del mapa oficial: P1 (peatonal, Av. Las Vegas), P2 (vehicular, Las Vegas, solo personal), P3 (peatonal, motos y visitantes, Las Vegas), P4 (peatonal y visitantes, Av. Regional), P5 (vehicular, Regional), P6 (entrada vehicular, Regional), P7 (peatonal, Calle 4 Sur), P8 (salida del parqueadero norte), P9 (peatonal y motos, Calle 5 Sur), P10 (peatonal, Las Vegas).",
+      "confirmado": true
+    },
+    "ambiental": {
+      "valor": {
+        "energia_electrica_kWh": 7635260,
+        "energia_solar_kWh": 411012,
+        "agua_EPM_m3": 134342,
+        "emisiones_tCO2e": 16629,
+        "alcance1": 82,
+        "alcance2": 1552,
+        "alcance3": 14995,
+        "aprovechamiento_residuos_pct": 45.1
+      },
+      "corte": "2025",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 257; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "",
+      "confirmado": true
+    }
+  },
+  "6_bloques": {
+    "fuente_mapa_oficial": "https://umap.openstreetmap.de/en/map/universidad-eafit-campus-medellin_67039 (mapa oficial embebido en https://www.eafit.edu.co/campus-eafit/mapa)",
+    "nota": "El mapa oficial NO tiene una capa de edificios con números. OpenStreetMap/Overpass no respondió (406/timeout). El mapa de campus 2018 que está en Scribd (https://www.scribd.com/document/416481311) no expone el texto. Faltan los bloques 1-2, 4-17, 21-25, 28, 30-31, 34-35 y 37.",
+    "lista": [
+      {
+        "valor": {
+          "bloque": 3,
+          "nombre": "Antiguo bloque 3, hoy Parque Origen",
+          "uso": "Desmontado desde 2024 porque no cumplía sismorresistencia. Hoy es un piloto de restauración ecológica sobre el corredor de la quebrada La Volcana (arquitecto Édgar Mazo). Primera piedra en 1962. Ganador de Holcim Foundation 2025."
+        },
+        "corte": "2025",
+        "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 252; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)–254",
+        "nota": "",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": 18,
+          "nombre": "Rectoría",
+          "uso": "Rectoría, Centro de Cómputo y oficinas de alta dirección; Librería Acentos en el piso 1. Se construyó donde estaba el antiguo auditorio José Antonio Galán."
+        },
+        "corte": "vigente",
+        "fuente": "https://www.eafit.edu.co/institucional/campus-eafit/audioguias/Lists/PuntosAudioguias/DispForm.aspx?ID=62 ('31. BLOQUE 18 / RECTORÍA', hoy da 404) ; https://www.eafit.edu.co/institucional/campus-eafit/infraestructura/Paginas/servicios.aspx",
+        "nota": "Tomado de snippets del buscador sobre páginas oficiales antiguas.",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": 19,
+          "nombre": "Edificio de Ingenierías",
+          "uso": "Ingenierías. Una de las primeras construcciones sostenibles de Antioquia: fachada natural, recolección de agua lluvia. Inaugurado en jun-2010 en el costado sur del campus."
+        },
+        "corte": "2010",
+        "fuente": "https://www.eafit.edu.co/sostenibilidad-ambiental/infraestructura (snippet) ; https://es.wikipedia.org/wiki/Universidad_EAFIT",
+        "nota": "El área no está confirmada.",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": 20,
+          "nombre": "Bloque 20 / Edificio de Ciencias",
+          "uso": "Ciencia y tecnología, Escuela de Ciencias Aplicadas e Ingeniería: 42 laboratorios, 8 talleres, 3 aulas de aprendizaje activo, 950 puestos, invernadero. Está entre el bloque 19 y el edificio Argos, sobre el pasillo Junín.",
+          "area_m2": 12500,
+          "pisos": 10,
+          "inauguracion": "27-sep (año probable 2023)"
+        },
+        "corte": "2023",
+        "fuente": "https://www.eafit.edu.co/noticias/bloque-20-una-obra-que-le-da-vida-la-voluntad-eafitense-de-crear-y-aprender ; https://vivirenelpoblado.com/el-bloque-20-de-eafit-un-espacio-para-motivar-la-vocacion-cientifica/ (25-sep-2023)",
+        "nota": "Las fuentes no coinciden: EAFIT dice 12.500 m² y 10 pisos; Vivir en El Poblado dice 'poco más de 13.000 m²' y 8 pisos. La noticia de EAFIT no da el año de la inauguración; se infiere 2023 por la fecha del artículo de Vivir en El Poblado.",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": 26,
+          "nombre": "Escuela de Administración",
+          "uso": "Escuela de Administración"
+        },
+        "corte": "~2021",
+        "fuente": "https://es.wikipedia.org/wiki/Universidad_EAFIT (pie de foto 'Bloque 26 - Universidad Eafit.jpg')",
+        "nota": "Viene solo de un pie de foto de Wikipedia; conviene confirmarlo.",
+        "confirmado": false
+      },
+      {
+        "valor": {
+          "bloque": 27,
+          "nombre": "Auditorio Fundadores",
+          "uso": "Auditorio principal, 630 asistentes, inaugurado en 1987."
+        },
+        "corte": "vigente",
+        "fuente": "https://repository.eafit.edu.co/items/8e69e58c-0a9e-4ba0-9f53-bcf4338f816a",
+        "nota": "El bloque sale del título del ítem del repositorio EAFIT.",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": 29,
+          "nombre": "Bloque 29 (administrativo)",
+          "uso": "Registro Académico en el piso 1; estudio de TV alterno de 32 m². Antes de 1998 funcionaban aquí la biblioteca, la Dirección Administrativa y Financiera y el Centro de Educación Continua."
+        },
+        "corte": "vigente",
+        "fuente": "https://www.eafit.edu.co/espacios ; https://www.eafit.edu.co/registro-academico (snippet)",
+        "nota": "",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": 32,
+          "nombre": "Centro Cultural Biblioteca Luis Echavarría Villegas",
+          "uso": "Biblioteca con torre técnica: construida en 1998 e inaugurada en 1999."
+        },
+        "corte": "vigente",
+        "fuente": "https://www.accioncultural.es/en/biblioteca_universidad_eafit ; https://www.g8bibliotecas.com/detalles-y-registro/biblioteca-24-horas-eafit (snippets)",
+        "nota": "El número de bloque solo lo dan fuentes secundarias. Es probable, pero no está verificado en eafit.edu.co.",
+        "confirmado": false
+      },
+      {
+        "valor": {
+          "bloque": 33,
+          "nombre": "Bloque 33",
+          "uso": "Servicios de tecnología (P&P) según un snippet"
+        },
+        "corte": "?",
+        "fuente": "https://www.eafit.edu.co/institucional/campus-eafit/infraestructura/Paginas/servicios.aspx (snippet)",
+        "nota": "Débil; página antigua.",
+        "confirmado": false
+      },
+      {
+        "valor": {
+          "bloque": 36,
+          "nombre": "Cafetería norte",
+          "uso": "Comidas: El Tejadito, Juan Valdez, Recanto, Pimientos"
+        },
+        "corte": "vigente",
+        "fuente": "https://umap.openstreetmap.de/en/map/universidad-eafit-campus-medellin_67039 (mapa oficial embebido en https://www.eafit.edu.co/campus-eafit/mapa)",
+        "nota": "En el mapa oficial el polígono está centrado aprox. en lon −75.578957, lat 6.201609.",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": 38,
+          "nombre": "Bloque 38",
+          "uso": "Se construyó para la Escuela de Ciencias y Humanidades. Tiene estudios de radio y TV (estudio de TV de 113 m² y 8 m de alto), centro multimedia, 30 aulas, 66 oficinas de profesores, 2 auditorios de 160 personas, hall de eventos y la sala coworking 38-405. Está detrás de la torre técnica de la biblioteca.",
+          "area_m2": 5290,
+          "pisos": 5,
+          "inauguracion": 2004,
+          "arquitecto": "Raúl Bernal Arango",
+          "inversion": "COP 5.500 millones (2004)"
+        },
+        "corte": "2004 / 2025",
+        "fuente": "https://www.eltiempo.com/archivo/documento/mam-1512038 (29-jul-2004) ; https://www.eafit.edu.co/espacios ; https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 258; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+        "nota": "",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": null,
+          "nombre": "Edificio Argos",
+          "uso": "Edificio junto al bloque 20 (pasillo Junín), con su propio parqueadero"
+        },
+        "corte": "vigente",
+        "fuente": "https://www.eafit.edu.co/noticias/bloque-20-una-obra-que-le-da-vida-la-voluntad-eafitense-de-crear-y-aprender ; https://umap.openstreetmap.de/en/map/universidad-eafit-campus-medellin_67039 (mapa oficial embebido en https://www.eafit.edu.co/campus-eafit/mapa)",
+        "nota": "",
+        "confirmado": true
+      },
+      {
+        "valor": {
+          "bloque": null,
+          "nombre": "Edificio de Idiomas",
+          "uso": "EAFIT Idiomas, estrenado en 2016"
+        },
+        "corte": "2016",
+        "fuente": "https://twitter.com/EAFIT/status/780801620531613696 ; Wikipedia (foto 'Edificio de Idiomas EAFIT 2016')",
+        "nota": "El número de bloque no está confirmado.",
+        "confirmado": false
+      }
+    ],
+    "espacios_no_bloque_mapa_oficial": {
+      "valor": [
+        "Cafetería Central (piso 1: Aldea Nikei, Home Food, Bigos, Frisby; piso 2: El Corral, Taco Factory, Mi Buñuelo, Dunkin)",
+        "Parque Los Pimientos",
+        "Plazoleta del Estudiante",
+        "Domo y jardín",
+        "Quioscos",
+        "Parque de la Ceiba",
+        "Parque Los Guayabos",
+        "Cancha norte",
+        "Cancha sintética",
+        "Gimnasio Vivo",
+        "Piscina",
+        "Placas polideportivas (4 más 1 cubierta)"
+      ],
+      "corte": "vigente",
+      "fuente": "https://umap.openstreetmap.de/en/map/universidad-eafit-campus-medellin_67039 (mapa oficial embebido en https://www.eafit.edu.co/campus-eafit/mapa)",
+      "nota": "Las geometrías (polígonos) se pueden descargar como GeoJSON: https://umap.openstreetmap.de/en/datalayer/67039/<id>/ con los ids 5ab25375-7942-4db3-8989-908efee4dc5d (parqueaderos), 02c78e3a-ad06-451e-839f-f763b42756d0 (accesos), eafff540-3289-40d4-843e-da5db4fbece7 (deportes) y a66d0f48-951c-4e08-a535-c90c9d57de98 (alimentación).",
+      "confirmado": true
+    }
+  },
+  "7_entorno": {
+    "estacion_metro_aguacatala": {
+      "valor": {
+        "linea": "A",
+        "stop_id": "CAT",
+        "direccion": "Cra. 48C #12 Sur-50",
+        "lat": 6.1938,
+        "lon": -75.581841
+      },
+      "corte": "GTFS 2025",
+      "fuente": "https://www.arcgis.com/sharing/rest/content/items/929fbd2dbfbf493ab44935577e8fbff6/data (GTFS Metro de Medellín 2025, stops.txt)",
+      "nota": "El tramo Poblado–Aguacatala (2,1 km) es el más largo entre estaciones de la red, según El Tiempo.",
+      "confirmado": true
+    },
+    "distancia_estacion_a_campus_m": {
+      "valor": {
+        "a_porteria_4_Av_Regional": 483,
+        "a_porteria_3_Las_Vegas": 546,
+        "a_plazoleta_del_estudiante": 847
+      },
+      "corte": "calculado 25-sep-2026",
+      "fuente": "GTFS 2025 + polígonos del mapa oficial uMap",
+      "nota": "Distancias en línea recta (haversine) calculadas por mí desde la estación hasta el centroide de cada portería. NO son distancias de caminata.",
+      "confirmado": true
+    },
+    "afluencia_aguacatala": {
+      "valor": null,
+      "corte": "",
+      "fuente": "https://www.metrodemedellin.gov.co/al-dia/noticias/aguacatala-y-poblado-van-adelante",
+      "nota": "No se encontró ninguna cifra pública de afluencia por estación. El Metro solo publica pasajeros por línea (MEData 2011-2020) y el total del sistema. En 2018 la estación se amplió con 2 niveles: uno de cicloparqueadero y otro de servicios.",
+      "confirmado": false
+    },
+    "comuna14_poblacion": {
+      "valor": {
+        "2025": 115872,
+        "2026": 116445,
+        "2024": 115097
+      },
+      "corte": "proyección DANE, actualización 30-jul-2025",
+      "fuente": "https://www.medellin.gov.co/es/wp-content/uploads/2022/08/1.-Proyecciones-Medellin-por-Comunas-y-Corregimientos-2018-2030-Actualizado.xlsx (página: https://www.medellin.gov.co/es/centro-documental/proyecciones-poblacion-viviendas-y-hogares/)",
+      "nota": "El archivo se llama 'Actualización Año 2025' y su fuente es DANE (contrato 4600104690 de 2025). La versión anterior 'Post-Covid' daba 119.626 para 2025, pero está superada.",
+      "confirmado": true
+    },
+    "estrato_predominante_comuna14": {
+      "valor": {
+        "estrato_6_pct_viviendas": 73.5,
+        "estrato_5_pct": 19.1,
+        "estrato_4_pct": 4.5,
+        "estrato_3_pct": 1.4,
+        "estrato_2_pct": 1.4
+      },
+      "corte": "ECV 2019",
+      "fuente": "https://www.medellin.gov.co/irj/go/km/docs/pccdesign/medellin/Temas/PlaneacionMunicipal/Publicaciones/Shared%20Content/Documentos/2021/Comuna%2014%20El%20Poblado-Ficha%20Informativa.pdf",
+      "nota": "Predomina el estrato 6 (Alto-Alto).",
+      "confirmado": true
+    },
+    "reparto_modal_valle_aburra": {
+      "valor": {
+        "EOD_2023": {
+          "a_pie": 41,
+          "bicicleta": 3,
+          "bus": 16,
+          "metro_masivo": 11,
+          "auto": 9,
+          "moto": 15,
+          "taxi": 4,
+          "otro": 1
+        },
+        "EOD_2017": {
+          "a_pie": 28,
+          "bicicleta": 1,
+          "bus": 18,
+          "metro_masivo": 16,
+          "auto": 13,
+          "moto": 12,
+          "taxi": 7
+        },
+        "viajes_diarios_2023": "10,5 millones (encuesta) + unos 3 millones estimados con big data"
+      },
+      "corte": "EOD AMVA 2023 (publicada 27-abr-2023)",
+      "fuente": "https://www.elcolombiano.com/antioquia/resultados-encuesta-origen-destino-area-metropolitana-2023-HD21226562 ; tablero EOD 2017: https://www.arcgis.com/apps/dashboards/a3e3de374e76497c83772e6d719d8d01 ; microdatos 2017: https://datosabiertos.metropol.gov.co/dataset/encuesta-origen-destino-2017-datos-por-viajes",
+      "nota": "Es el reparto de TODOS los motivos en el Valle de Aburrá, NO solo de los viajes por estudio ni de la llegada a EAFIT. Para sacar el reparto por motivo 'estudio' hay que procesar los microdatos de la EOD 2017 del portal AMVA (no lo hice). El 2017 está reconstruido a partir de las variaciones que da la nota de prensa.",
+      "confirmado": true
+    },
+    "reparto_modal_llegada_EAFIT": {
+      "valor": null,
+      "corte": "",
+      "fuente": "https://www.eafit.edu.co/sostenibilidad-ambiental/movilidad",
+      "nota": "No encontrado. EAFIT tiene un Plan de Movilidad Empresarial Sostenible (PMES) y el sistema EcoMovilidad de bicicletas eléctricas, pero su página de movilidad dio 403. Proxy disponible: ingreso diario de 2.645 vehículos y 899 motos (informe 2025, pág. 257).",
+      "confirmado": false
+    }
+  },
+  "8_finanzas": {
+    "ingresos_operacionales": {
+      "valor": 518241,
+      "corte": "real 2025, COP millones",
+      "fuente": "https://universidadeafit.widen.net/content/uf7bnmzwqu/original/informe-sostenibildad-2025.pdf (pág. PDF 19; landing: https://www.eafit.edu.co/informes-de-gestion-y-sostenibilidad/informe-sostenibilidad-2025)",
+      "nota": "Gastos operacionales: $510.214 millones; excedente operacional: $8.027 millones.",
+      "confirmado": true
+    },
+    "matricula_pregrado_referencia": {
+      "valor": 10855690,
+      "corte": "sin fecha (probablemente 2025 o 2026)",
+      "fuente": "resultado de búsqueda sobre Ingeniería de Sistemas (agregadores tipo losestudiantes.com / colombiaestudia.com)",
+      "nota": "NO confirmado: EAFIT ya publica la página de tarifas 2027-1 (https://www.eafit.edu.co/tarifas-de-programas-de-pregrado), pero los valores no están en el HTML y parecen cargarse con JavaScript. Solo había un PDF antiguo embebido en Issuu (2024-2).",
+      "confirmado": false
+    }
+  }
+}
