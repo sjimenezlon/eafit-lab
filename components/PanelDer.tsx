@@ -176,6 +176,7 @@ function Ficha() {
         ))}
       </dl>
       {s.nota && <p className="text-[10.5px] leading-snug text-[#a0a1a5]">{s.nota}</p>}
+      {s.enlace && <a href={s.enlace.href} className="block rounded-xl bg-zafre px-4 py-3 text-[12.5px] font-medium text-white hover:bg-[#00004d]">{s.enlace.texto}</a>}
       <button onClick={() => lab.set({ seleccion: null })} className="text-[11.5px] text-zafre hover:underline">Limpiar</button>
     </div>
   );

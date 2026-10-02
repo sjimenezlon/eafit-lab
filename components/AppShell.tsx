@@ -61,6 +61,7 @@ export default function AppShell() {
             <Icono d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5" />
           </button>
           <button onClick={() => lab.set({ intro: true })} className={boton + " max-sm:hidden"}>Fuentes</button>
+          <a href="/bloque20" className={boton + " max-sm:hidden"}>Bloque 20 en 3D</a>
         </div>
       </div>
 

@@ -21,7 +21,7 @@ export type CapaId =
   | "edificios" | "bloques" | "poblacion" | "estrato" | "arboles" | "poi"
   | "transporte" | "oficial" | "pot" | "espacio" | "equipamientos" | "agua" | "radios" | "rutas";
 
-export type Seleccion = { tipo: string; titulo: string; filas: [string, string][]; nota?: string } | null;
+export type Seleccion = { tipo: string; titulo: string; filas: [string, string][]; nota?: string; enlace?: { href: string; texto: string } } | null;
 
 export type Escenario = "pico" | "evento" | "valle";
 
