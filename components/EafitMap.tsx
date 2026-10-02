@@ -448,7 +448,9 @@ function ficha(f: maplibregl.MapGeoJSONFeature): Seleccion {
           ...(p.z != null ? [["Cota del suelo", `${fmt(p.z)} m s. n. m.`] as [string, string]] : []),
           ...(uso ? [["Uso", uso.uso + (uso.confirmado ? "" : " (sin confirmar)")] as [string, string]] : []),
         ],
-        nota: p.e
+        nota: p.e === 2
+          ? "City Urban 2025 le da 19–20 m, menos de lo que permiten ocho pisos de laboratorio: parece medido con la obra a medias. Aquí van la huella del catastro y la altura del modelo de Blender (34 m, estimada)."
+          : p.e
           ? "Esta huella no tiene medición de City Urban. La altura se estimó con los pisos de OpenStreetMap, a 3,1 m por piso. El nombre viene de OpenStreetMap."
           : "Altura del techo de este volumen: Alcaldía de Medellín, Cartografía City Urban 2025 (AGL). Las piezas contiguas del mismo techo se unieron. Pisos: Catastro. Nombre: OpenStreetMap.",
         ...(/^Bloque 20\b/.test(p.b || "") ? { enlace: { href: "/bloque20", texto: "Abrir el capítulo del Bloque 20 en 3D →" } } : {}),

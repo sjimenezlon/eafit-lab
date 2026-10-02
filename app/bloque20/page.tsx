@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Visor3D from "@/components/Visor3D";
+import VisorCliente from "@/components/VisorCliente";
 import { CIFRAS, FICHA, MEDIDO, F } from "@/data/bloque20";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ const Fuente = ({ href, children }: { href: string; children: React.ReactNode })
 
 function Lamina({ src, alt, titulo, children, invertir = false }: { src: string; alt: string; titulo: string; children: React.ReactNode; invertir?: boolean }) {
   return (
-    <section className={`grid items-center gap-8 md:grid-cols-[1.55fr_1fr] ${invertir ? "md:[&>figure]:order-2 md:grid-cols-[1fr_1.55fr]" : ""}`}>
+    <section className={`grid items-center gap-8 ${invertir ? "md:grid-cols-[1fr_1.55fr] md:[&>figure]:order-2" : "md:grid-cols-[1.55fr_1fr]"}`}>
       <figure className="overflow-hidden rounded-[18px] bg-[#e6e3dc]">
         <img src={src} alt={alt} loading="lazy" className="h-auto w-full" width={1800} height={1100} />
       </figure>
@@ -61,8 +61,9 @@ export default function Bloque20() {
 
       <section className="mx-auto mt-8 max-w-[1180px] px-5">
         <figure className="overflow-hidden rounded-[22px] bg-[#e6e3dc]">
-          <img src="/bloque20/aerea.webp" alt="Render aéreo del Bloque 20: un volumen de ocho pisos envuelto por un exoesqueleto de acero con cruces en X y una cubierta de paneles solares, rodeado por la maqueta blanca de los edificios vecinos" className="h-auto w-full" width={1800} height={1100} />
+          <img src="/bloque20/aerea.webp" alt="Render aéreo del Bloque 20 desde el nororiente: un volumen de ocho pisos envuelto por un exoesqueleto de acero con cruces en X y una cubierta de paneles solares, entre los árboles del campus y con el río Medellín al fondo" className="h-auto w-full" width={1800} height={1100} />
         </figure>
+        <p className="mt-2 text-[11px] text-white/40">Desde el nororiente, en el ángulo de la <Fuente href={F.poblado}>foto aérea publicada en 2023</Fuente>. Render en Cycles.</p>
         <dl className="mt-6 grid grid-cols-6 gap-4 max-md:grid-cols-3 max-sm:grid-cols-2">
           {CIFRAS.map((c) => (
             <div key={c.k} className="border-t border-white/10 pt-3">
@@ -75,20 +76,29 @@ export default function Bloque20() {
 
       <div className="mx-auto mt-20 max-w-[1180px] space-y-20 px-5">
         {/* visor */}
-        <section className="grid gap-8 md:grid-cols-[1fr_1.55fr]">
-          <div>
-            <h2 className="text-[26px] font-semibold leading-tight tracking-tight">Gírelo usted</h2>
-            <p className="mt-4 text-[14.5px] leading-relaxed text-white/70">
-              El mismo modelo de Blender, exportado a glTF (58 KB). Arrastre para girar, pellizque o use la rueda para acercarse. Si lo mira
-              desde abajo, verá los doce aisladores en azul.
+        <section>
+          <div className="grid gap-4 md:grid-cols-[1fr_1.4fr] md:items-end">
+            <h2 className="text-[34px] font-semibold leading-tight tracking-tight max-sm:text-[28px]">Explórelo</h2>
+            <p className="text-[14.5px] leading-relaxed text-white/70">
+              El mismo modelo de Blender, en el navegador. Córtelo piso por piso para ver los tres anillos, despiécelo, levántelo sobre sus
+              aisladores o enciéndalo de noche. Toque cualquier pieza para saber qué es y si es un dato o una estimación.
             </p>
-            <video className="mt-6 w-full rounded-[14px] bg-[#e6e3dc]" src="/bloque20/giro.mp4" poster="/bloque20/giro.jpg" autoPlay muted loop playsInline aria-label="Video: vuelta completa alrededor del Bloque 20" />
-            <p className="mt-2 text-[11px] text-white/40">Vuelta completa, render en EEVEE · 8 s.</p>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] bg-gradient-to-b from-[#e9edf2] to-[#d7dadf]">
-            <Visor3D />
+          <div className="mt-6 aspect-[16/9] w-full max-md:aspect-[4/5]">
+            <VisorCliente />
           </div>
         </section>
+
+        <Lamina src="/bloque20/despiece.webp" alt="Despiece del Bloque 20: los ocho pisos separados en el aire, cada uno con su losa, el núcleo celeste de laboratorios y los muros azules de oficinas; abajo, los aisladores y arriba la cubierta solar" titulo="Pieza por pieza">
+          <p>
+            Los ocho pisos separados, de los aisladores a la cubierta solar. En cada planta se repite el mismo orden: laboratorios al centro,
+            pasillo alrededor y oficinas contra la fachada.
+          </p>
+          <p>
+            Ocho pisos sobre una huella de 1.643 m² dan unos 13.100 m², entre los{" "}
+            <Fuente href={F.eafit2023}>12.500</Fuente> y los <Fuente href={F.semana}>13.600 m²</Fuente> que ha publicado EAFIT.
+          </p>
+        </Lamina>
 
         <Lamina src="/bloque20/corte.webp" alt="Corte del Bloque 20 a la altura del sexto piso: un núcleo celeste de laboratorios, un pasillo blanco alrededor y un anillo exterior de oficinas en azul oscuro" titulo="Tres anillos">
           <p>
@@ -116,9 +126,18 @@ export default function Bloque20() {
           <p className="text-[12px] text-white/45">La posición exacta de los apoyos no es pública; aquí van en una retícula de 3 × 4.</p>
         </Lamina>
 
+        <Lamina src="/bloque20/noche.webp" alt="El Bloque 20 de noche, con los pisos de laboratorios encendidos detrás del exoesqueleto oscuro y los árboles del campus en primer plano" titulo="De noche" invertir>
+          <p>
+            Con los laboratorios encendidos, el exoesqueleto se lee como una jaula delante del vidrio. Vista desde el nororiente, sobre los
+            árboles del campus.
+          </p>
+          <video className="w-full rounded-[14px] bg-[#e6e3dc]" src="/bloque20/giro.mp4" poster="/bloque20/giro.jpg" autoPlay muted loop playsInline aria-label="Video: vuelta completa alrededor del Bloque 20 de día" />
+          <p className="text-[11px] text-white/40">De día, una vuelta completa en EEVEE · 8 s.</p>
+        </Lamina>
+
         <Lamina src="/bloque20/peaton.webp" alt="Vista desde el nivel de la calle mirando hacia arriba la fachada sur del Bloque 20, con su exoesqueleto de acero" titulo="Desde la calle">
           <p>
-            A la altura de los ojos, desde el sur. En el modelo, el exoesqueleto queda dos metros por fuera de la fachada y se amarra
+            A la altura de los ojos, desde el sur, con personas a escala. En el modelo, el exoesqueleto queda dos metros por fuera de la fachada y se amarra
             a cada losa; detrás van las lamas verticales grises que se ven en la foto.
           </p>
           <p>
@@ -160,8 +179,9 @@ export default function Bloque20() {
         </section>
 
         <footer className="border-t border-white/10 pb-14 pt-6 text-[12px] leading-relaxed text-white/45">
-          Modelado por procedimiento en Blender 5.2 (<code className="font-mono text-white/60">blender/bloque20.py</code>). Las fotos fijas se renderizaron en Cycles y la vuelta en EEVEE.
-          Entorno: <Fuente href={F.cityurban}>City Urban 2025</Fuente> (alturas de los vecinos) y el arbolado de la Alcaldía de Medellín; huella del{" "}
+          Modelado por procedimiento en Blender 5.2 (<code className="font-mono text-white/60">blender/bloque20.py</code>). Fotos fijas en Cycles, vuelta en EEVEE y visor web con three.js sobre el GLB exportado.
+          Entorno en 250 m: <Fuente href={F.cityurban}>City Urban 2025</Fuente> (alturas de los vecinos), suelo de <Fuente href="https://www.openstreetmap.org/copyright">OpenStreetMap</Fuente>,
+          árboles de la Alcaldía de Medellín y copas detectadas en la ortofoto Esri World Imagery; huella del{" "}
           <Fuente href={F.catastro}>catastro</Fuente> y de <Fuente href={F.osm}>OpenStreetMap</Fuente>. Otras fuentes: <Fuente href={F.semana}>Semana (2018)</Fuente>,{" "}
           <Fuente href={F.blacksmith}>Blacksmith (mobiliario de laboratorios)</Fuente>. Consultado el 2-oct-2026.
         </footer>

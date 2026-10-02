@@ -48,5 +48,7 @@ export const MEDIDO: { k: string; v: string; tipo: "dato" | "estimado" | "ilustr
   { k: "12 aisladores", v: "mageba suministró 12 apoyos de caucho con núcleo de plomo. Su posición exacta no es pública: aquí van en una retícula de 3 × 4.", tipo: "estimado" },
   { k: "Exoesqueleto en X y paneles en la cubierta", v: "Se leen en la foto aérea publicada en 2023. La modulación (4 × 6 vanos, cruces cada dos pisos) se ajustó a ojo.", tipo: "estimado" },
   { k: "Altura de 34 m (37 m con la pérgola)", v: "Primer piso de 4,6 m y siete de 4,2 m. City Urban 2025 registra 19–20 m, menos de lo que permiten ocho pisos de laboratorio: parece medido con la obra a medias.", tipo: "estimado" },
+  { k: "Entorno en 250 m", v: "165 edificios con altura de City Urban 2025 y suelo de OpenStreetMap. De los 992 árboles, 84 son del inventario de la Alcaldía; las otras 908 copas se detectaron por color y textura en la ortofoto, con altura ilustrativa.", tipo: "estimado" },
+  { k: "Personas", v: "Figuras a escala en la vista peatonal; no representan aforo.", tipo: "ilustrativo" },
   { k: "Lamas de fachada y tabiques interiores", v: "Ritmo y anchos ilustrativos; no hay planos públicos.", tipo: "ilustrativo" },
 ];

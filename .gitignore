@@ -7,3 +7,5 @@ scripts/crudo/
 scripts/__pycache__/
 qa/*.png
 .env*.local
+blender/crudo_orto/
+*.blend1
