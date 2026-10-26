@@ -155,6 +155,26 @@ function Entorno() {
   );
 }
 
+function CurvaDia({ serie, horas, cap, hora }: { serie: number[]; horas: number[]; cap?: number; hora: number }) {
+  const max = Math.max(cap || 0, ...serie, 1);
+  return (
+    <div>
+      <p className="etq mb-1.5">A lo largo del día</p>
+      <div className="flex items-end gap-[3px]" style={{ height: 56 }}>
+        {serie.map((v, i) => {
+          const act = horas[i] === hora;
+          return (
+            <button key={i} onClick={() => lab.set({ hora: horas[i] })} title={`${String(horas[i]).padStart(2, "0")}:00 · ${v.toLocaleString("es-CO")}`}
+              className="flex-1 rounded-t-[2px] transition" aria-label={`${horas[i]}:00`}
+              style={{ height: `${Math.max(3, (v / max) * 100)}%`, background: act ? "#000066" : "#c9d3dd" }} />
+          );
+        })}
+      </div>
+      <div className="mt-1 flex justify-between text-[9px] text-[#a0a1a5]"><span>6</span><span>12</span><span>18</span><span>21 h</span></div>
+    </div>
+  );
+}
+
 function Ficha() {
   const st = useLab();
   const s = st.seleccion;
@@ -167,6 +187,7 @@ function Ficha() {
         <p className="etq">{s.tipo}</p>
         <h2 className="mt-0.5 text-[17px] font-semibold leading-tight tracking-tight text-zafre">{s.titulo}</h2>
       </div>
+      {s.spark && <CurvaDia serie={s.spark.serie} horas={s.spark.horas} cap={s.spark.cap} hora={st.hora} />}
       <dl>
         {s.filas.map(([k, v], i) => (
           <div key={i} className={`flex items-baseline gap-4 border-b linea py-2 text-[12px] last:border-0 ${k ? "justify-between" : ""}`}>

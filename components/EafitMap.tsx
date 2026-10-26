@@ -12,6 +12,15 @@ import { POI_COLOR, POI_LABEL, ESTRATO_COLOR, OFICIAL_COLOR } from "./paletas";
 const MODO_COLOR = Object.fromEntries(MODOS.map((m) => [m.id, m.color])) as Record<Modo, string>;
 const MODO_VEL = Object.fromEntries(MODOS.map((m) => [m.id, m.vel])) as Record<Modo, number>;
 
+// Capa de ocupación: rampa de calor por nivel de uso (frío = holgado, caliente = saturado).
+const OCUP_RAMP: any = ["interpolate", ["linear"], ["get", "ratio"],
+  0, "#3aa0c8", 0.35, "#46C69F", 0.6, "#F8D300", 0.8, "#FF8F1B", 1, "#F0142C"];
+export const OCUP_USO: Record<string, string> = {
+  aula: "Aulas y docencia", lab: "Laboratorios y oficinas", biblioteca: "Biblioteca",
+  comidas: "Alimentación", gimnasio: "Deporte", eventos: "Auditorio y eventos",
+  servicios: "Servicios", otros: "Otros / acceso",
+};
+
 // Qué capas del mapa pertenecen a cada interruptor del panel.
 const GRUPOS: Record<CapaId, string[]> = {
   edificios: ["edif-3d", "edif-line"],
@@ -28,6 +37,8 @@ const GRUPOS: Record<CapaId, string[]> = {
   agua: ["agua", "rio-poly"],
   radios: ["radios", "radios-label"],
   rutas: ["rutas-lineas"],
+  ocupacion: ["ocup-3d", "ocup-line"],
+  siata: ["siata-lluvia", "siata-nivel", "siata-aire", "siata-aire-lbl"],
 };
 
 type Ruta = { m: Modo; o: string; p: [number, number][]; cum: number[]; len: number };
@@ -78,8 +89,35 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
   const cont = useRef<HTMLDivElement>(null);
   const listo = useRef(false);
   const rutasRef = useRef<{ normal: Ruta[]; evento: Ruta[] }>({ normal: [], evento: [] });
+  const ocupRef = useRef<{ feats: any[]; horas: number[] }>({ feats: [], horas: [] });
   const agentes = useRef<Agente[]>([]);
   const st = useLab();
+
+  // Reparte la ocupación de la franja elegida sobre las huellas de los bloques.
+  const pintarHora = (h: number) => {
+    const map = mapRef.current;
+    const { feats, horas } = ocupRef.current;
+    if (!map || !feats.length) return;
+    const i = horas.indexOf(h);
+    if (i < 0) return;
+    const features = feats.map((f) => {
+      const oc = f.properties.serie[i];
+      const cap = f.properties.cap || 1;
+      return { ...f, properties: { ...f.properties, oc, ratio: Math.min(1.25, oc / cap) } };
+    });
+    (map.getSource("ocup") as GeoJSONSource | undefined)?.setData({ type: "FeatureCollection", features } as any);
+  };
+
+  // Entorno en vivo: trae el GeoJSON combinado de SIATA (aire, lluvia, nivel).
+  const cargarSiata = async () => {
+    const map = mapRef.current;
+    const src = map?.getSource("siata") as GeoJSONSource | undefined;
+    if (!src) return;
+    try {
+      const gj = await fetch("/api/siata?km=7").then((r) => r.json());
+      src.setData(gj);
+    } catch { /* la capa queda vacía si SIATA no responde */ }
+  };
 
   // ------------------------------------------------------------ creación del mapa
   useEffect(() => {
@@ -112,12 +150,12 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       J("/data/pot.geojson"), J("/data/espacio_publico.geojson"), J("/data/equipamientos.geojson"),
       J("/data/campus_oficial.geojson"), J("/data/rutas.json"), J("/data/rutas_evento.json"),
       J("/data/arboles3d.geojson"), J("/data/metro3d.geojson"), J("/data/rio3d.geojson"),
-      J("/data/senderos.geojson"),
+      J("/data/senderos.geojson"), J("/data/ocupacion.json"),
     ]);
 
     conEstilo(map, async () => {
       const [edif, bloques, campus, manz, estrato, arboles, poi, mLinea, mEst, parad, busR, ciclo, encicla,
-        agua, rio, pot, ep, eq, oficial, rutas, rutasEv, arb3d, metro3d, rio3d, senderos] = await datos;
+        agua, rio, pot, ep, eq, oficial, rutas, rutasEv, arb3d, metro3d, rio3d, senderos, ocup] = await datos;
 
       const add = (id: string, data: any) => map.addSource(id, { type: "geojson", data });
       add("campus", campus);
@@ -145,6 +183,19 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       add("agentes", { type: "FeatureCollection", features: [] });
       add("sel", { type: "FeatureCollection", features: [] });
       rutasRef.current = { normal: prepararRutas(rutas), evento: prepararRutas(rutasEv) };
+
+      // Ocupación: cruza el perfil horario sintético con la huella de cada bloque.
+      const ocupById = new Map<number, any>(ocup.bloques.map((b: any) => [b.id, b]));
+      const ocupFeats = bloques.features
+        .filter((f: any) => ocupById.has(f.properties.id))
+        .map((f: any) => {
+          const b = ocupById.get(f.properties.id);
+          return { type: "Feature", geometry: f.geometry,
+            properties: { id: b.id, name: b.name, uso: b.uso, cap: b.cap, serie: b.serie, picoH: b.pico.h, picoV: b.pico.v } };
+        });
+      ocupRef.current = { feats: ocupFeats, horas: ocup.horas };
+      add("ocup", { type: "FeatureCollection", features: [] });
+      add("siata", { type: "FeatureCollection", features: [] });
 
       const L = (spec: any) => map.addLayer(spec);
       // --- superficies
@@ -209,6 +260,14 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
         "fill-extrusion-vertical-gradient": true } });
       L({ id: "edif-line", type: "line", source: "edif", minzoom: 16.7, filter: ["==", ["get", "c"], 1], paint: {
         "line-color": "rgba(255,255,255,0.55)", "line-width": 0.8, "line-opacity": 0.45 } });
+      L({ id: "ocup-3d", type: "fill-extrusion", source: "ocup", paint: {
+        "fill-extrusion-color": OCUP_RAMP,
+        "fill-extrusion-height": ["+", ["*", ["coalesce", ["get", "ratio"], 0], 52], 3],
+        "fill-extrusion-base": 0,
+        "fill-extrusion-opacity": 0.82,
+        "fill-extrusion-vertical-gradient": false } });
+      L({ id: "ocup-line", type: "line", source: "ocup", paint: {
+        "line-color": "rgba(255,255,255,0.4)", "line-width": 0.6, "line-opacity": 0.6 } });
       L({ id: "arboles-3d", type: "fill-extrusion", source: "arb3d", paint: {
         "fill-extrusion-color": ["case", [">", ["get", "h"], 9.5], "#2f6b45", "#3d9a5c"],
         "fill-extrusion-height": ["get", "h"], "fill-extrusion-base": 0,
@@ -231,6 +290,18 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
         "circle-color": ["match", ["get", "m"], ...MODOS.flatMap((m) => [m.id, m.color]), "#fff"],
         "circle-stroke-width": 0.7, "circle-stroke-color": "rgba(8,10,14,0.65)",
         "circle-blur": 0.05 } });
+      // --- SIATA (entorno en vivo): lluvia y nivel debajo, aire con color ICA encima
+      L({ id: "siata-lluvia", type: "circle", source: "siata", filter: ["==", ["get", "tipo"], "lluvia"], paint: {
+        "circle-radius": ["interpolate", ["linear"], ["coalesce", ["get", "valor"], 0], 0, 3, 5, 7, 20, 13],
+        "circle-color": "#2f6fe0", "circle-opacity": 0.7, "circle-stroke-color": "#0b0c10", "circle-stroke-width": 1 } });
+      L({ id: "siata-nivel", type: "circle", source: "siata", filter: ["==", ["get", "tipo"], "nivel"], paint: {
+        "circle-radius": 6, "circle-color": "#19b6c7", "circle-opacity": 0.85,
+        "circle-stroke-color": "#06262b", "circle-stroke-width": 1.4 } });
+      L({ id: "siata-aire", type: "circle", source: "siata", filter: ["==", ["get", "tipo"], "aire"], paint: {
+        "circle-radius": ["interpolate", ["linear"], ["zoom"], 12, 7, 16, 12],
+        "circle-color": ["coalesce", ["get", "color"], "#9aa0a6"],
+        "circle-stroke-color": "#0b0c10", "circle-stroke-width": 1.6, "circle-opacity": 0.95 } });
+
       // --- rótulos
       const txt = { "text-font": ["Noto Sans Regular"], "text-size": 10.5, "text-letter-spacing": 0.02 } as any;
       const halo = { "text-color": "rgba(255,255,255,0.85)", "text-halo-color": "rgba(11,12,16,0.85)", "text-halo-width": 1.2 };
@@ -253,6 +324,9 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       L({ id: "radios-label", type: "symbol", source: "radios", layout: {
         ...txt, "symbol-placement": "line", "text-field": ["concat", ["to-string", ["get", "r"]], " m · ~", ["to-string", ["get", "min"]], " min a pie"], "text-size": 10 },
         paint: { ...halo, "text-color": "#BCE6FB" } });
+      L({ id: "siata-aire-lbl", type: "symbol", source: "siata", filter: ["==", ["get", "tipo"], "aire"], layout: {
+        ...txt, "text-field": ["concat", "ICA ", ["to-string", ["get", "ica"]]], "text-size": 10.5, "text-offset": [0, 1.4], "text-anchor": "top" },
+        paint: { "text-color": "#ffffff", "text-halo-color": "rgba(11,12,16,0.9)", "text-halo-width": 1.4 } });
 
       // etiquetas del mapa base al final (encima de todo)
       for (const l of map.getStyle().layers) {
@@ -260,7 +334,7 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
       }
 
       // --- interacción
-      const clicables = ["agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "arboles-3d", "porteria-pt", "oficial-3d", "oficial-fill", "metro-3d", "edif-3d", "senderos", "campus-base", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
+      const clicables = ["siata-aire", "siata-nivel", "siata-lluvia", "ocup-3d", "agentes", "metro-est", "encicla", "paraderos", "poi", "arboles", "arboles-3d", "porteria-pt", "oficial-3d", "oficial-fill", "metro-3d", "edif-3d", "senderos", "campus-base", "eq-fill", "ep-fill", "pot-fill", "manz-fill", "estrato-fill"];
       let selId: number | string | undefined;
       map.on("click", (e) => {
         const capas = clicables.filter((id) => map.getLayer(id) && map.getLayoutProperty(id, "visibility") !== "none");
@@ -286,6 +360,8 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
 
       listo.current = true;
       aplicarEstado(map, lab.get());
+      pintarHora(lab.get().hora);
+      cargarSiata();
       reiniciarAgentes();
     });
 
@@ -375,6 +451,34 @@ export default function EafitMap({ mapRef }: { mapRef: React.MutableRefObject<Ml
     if (map && listo.current) aplicarEstado(map, st);
   }, [st.capas, st.basemap, st.colorEdif, st.poiCats]);
 
+  // Franja horaria → repinta la ocupación.
+  useEffect(() => {
+    if (listo.current) pintarHora(st.hora);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [st.hora]);
+
+  // Entorno en vivo: refresca SIATA cada 10 min mientras la capa está encendida.
+  useEffect(() => {
+    if (!st.capas.siata) return;
+    if (listo.current) cargarSiata();
+    const id = setInterval(() => cargarSiata(), 600000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [st.capas.siata]);
+
+  // Reproducir el día hora por hora.
+  useEffect(() => {
+    if (!st.horaPlay) return;
+    const horas = ocupRef.current.horas;
+    if (!horas.length) return;
+    const id = setInterval(() => {
+      const cur = lab.get().hora;
+      const idx = horas.indexOf(cur);
+      lab.set({ hora: horas[(idx + 1) % horas.length] });
+    }, 850);
+    return () => clearInterval(id);
+  }, [st.horaPlay]);
+
   const vistaPrev = useRef(st.vista);
   useEffect(() => {
     const map = mapRef.current;
@@ -424,7 +528,8 @@ function aplicarEstado(map: MlMap, s: ReturnType<typeof lab.get>) {
   }
   if (map.getLayer("edif-3d")) {
     map.setPaintProperty("edif-3d", "fill-extrusion-color", marcarSel(colorEdif(s.colorEdif)));
-    map.setPaintProperty("edif-3d", "fill-extrusion-opacity", s.capas.poblacion || s.capas.estrato || s.capas.pot ? 0.55 : 0.92);
+    map.setPaintProperty("edif-3d", "fill-extrusion-opacity",
+      s.capas.ocupacion ? 0.22 : s.capas.poblacion || s.capas.estrato || s.capas.pot ? 0.55 : 0.92);
   }
   if (map.getLayer("poi")) {
     const cats = Object.entries(s.poiCats).filter(([, v]) => v).map(([k]) => k);
@@ -518,6 +623,55 @@ function ficha(f: maplibregl.MapGeoJSONFeature): Seleccion {
       return { tipo: "Agente simulado", titulo: m?.label ?? p.m, filas: [["Origen", p.o], ["Longitud del recorrido", `${fmt(p.len)} m`]],
         nota: "Recorrido calculado sobre la red vial de OpenStreetMap, entrando por la portería más cercana." };
     }
+    case "ocup-3d": {
+      const serie: number[] = typeof p.serie === "string" ? JSON.parse(p.serie) : p.serie || [];
+      const horas = serie.map((_, i) => 6 + i);
+      const h = lab.get().hora;
+      const oc = p.oc ?? 0, cap = p.cap || 1;
+      const pct = Math.round((oc / cap) * 100);
+      return {
+        tipo: `Ocupación estimada · ${OCUP_USO[p.uso] || p.uso}`,
+        titulo: p.name || "Bloque",
+        filas: [
+          ["Franja", `${String(h).padStart(2, "0")}:00`],
+          ["Personas (estimado)", fmt(oc)],
+          ["Capacidad estimada", fmt(cap)],
+          ["Ocupación", `${pct} %`],
+          ["Pico del día", `${String(p.picoH).padStart(2, "0")}:00 · ${fmt(p.picoV)} pers.`],
+        ],
+        spark: { serie, horas, cap },
+        nota: "Dato SINTÉTICO, no es ocupación real de EAFIT: perfil determinista por tipo de uso, marcador de posición del conteo agregado de la red Wi-Fi (clientes por AP y franja).",
+      };
+    }
+    case "siata-aire":
+      return {
+        tipo: "Calidad del aire · en vivo (SIATA)", titulo: p.nombre,
+        filas: [
+          ["PM2.5 (prom. 24 h)", `${fmt(p.pm25, 1)} µg/m³`],
+          ["Índice (ICA)", `${fmt(p.ica)} · ${p.cat}`],
+          ["Municipio", p.municipio || "—"],
+          ["Distancia al campus", `${fmt(p.dist, 1)} km`],
+          ["Corte", p.corte || "—"],
+        ],
+        nota: "SIATA — Sistema de Alerta Temprana de Medellín y el Valle de Aburrá. Promedio móvil 24 h; color según la escala oficial del ICA. Dato en vivo.",
+        enlace: { href: "https://siata.gov.co/", texto: "Abrir SIATA →" },
+      };
+    case "siata-nivel":
+      return {
+        tipo: "Nivel de quebrada · en vivo (SIATA)", titulo: p.nombre,
+        filas: [["Nivel reportado", fmt(p.valor, 2)], ["Subcuenca", p.subcuenca || "—"],
+          ["Barrio", p.barrio || "—"], ["Distancia al campus", `${fmt(p.dist, 1)} km`]],
+        nota: "SIATA, red de nivel. El valor es el nivel que reporta la estación (vigilancia de crecientes). Dato en vivo.",
+        enlace: { href: "https://siata.gov.co/", texto: "Abrir SIATA →" },
+      };
+    case "siata-lluvia":
+      return {
+        tipo: "Lluvia · en vivo (SIATA)", titulo: p.nombre,
+        filas: [["Precipitación", `${fmt(p.valor, 1)} mm`], ["Subcuenca", p.subcuenca || "—"],
+          ["Barrio", p.barrio || "—"], ["Distancia al campus", `${fmt(p.dist, 1)} km`]],
+        nota: "SIATA, red pluviométrica. Dato en vivo.",
+        enlace: { href: "https://siata.gov.co/", texto: "Abrir SIATA →" },
+      };
   }
   return null;
 }

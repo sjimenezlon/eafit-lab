@@ -19,9 +19,10 @@ export type SimStats = { t: number; enRuta: number; llegados: number; porModo: P
 
 export type CapaId =
   | "edificios" | "bloques" | "poblacion" | "estrato" | "arboles" | "poi"
-  | "transporte" | "oficial" | "pot" | "espacio" | "equipamientos" | "agua" | "radios" | "rutas";
+  | "transporte" | "oficial" | "pot" | "espacio" | "equipamientos" | "agua" | "radios" | "rutas"
+  | "ocupacion" | "siata";
 
-export type Seleccion = { tipo: string; titulo: string; filas: [string, string][]; nota?: string; enlace?: { href: string; texto: string } } | null;
+export type Seleccion = { tipo: string; titulo: string; filas: [string, string][]; nota?: string; enlace?: { href: string; texto: string }; spark?: { serie: number[]; horas: number[]; cap?: number } } | null;
 
 export type Escenario = "pico" | "evento" | "valle";
 
@@ -36,6 +37,8 @@ export type LabState = {
   corriendo: boolean;
   vel: number;
   agentes: number;
+  hora: number;        // franja horaria de la capa de ocupación (6–21)
+  horaPlay: boolean;   // reproduce el día hora por hora
   seleccion: Seleccion;
   sim: SimStats;
   intro: boolean;
@@ -48,6 +51,7 @@ const initial: LabState = {
   capas: {
     edificios: true, bloques: true, poblacion: false, estrato: false, arboles: true, poi: false,
     transporte: true, oficial: true, pot: false, espacio: false, equipamientos: false, agua: true, radios: false, rutas: false,
+    ocupacion: false, siata: false,
   },
   colorEdif: "campus",
   poiCats: {
@@ -60,6 +64,8 @@ const initial: LabState = {
   corriendo: true,
   vel: 1,
   agentes: 600,
+  hora: 11,
+  horaPlay: false,
   seleccion: null,
   sim: { t: 0, enRuta: 0, llegados: 0, porModo: {} },
   intro: true,

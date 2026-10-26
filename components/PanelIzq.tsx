@@ -148,6 +148,12 @@ function useAcceso() {
 
 // ---------------------------------------------------------------- capas (menú flotante)
 const CAPAS: { grupo: string; items: { id: CapaId; t: string; c: string }[] }[] = [
+  { grupo: "Ocupación del campus", items: [
+    { id: "ocupacion", t: "Aforo por bloque y hora", c: "#F0142C" },
+  ] },
+  { grupo: "Entorno en vivo · SIATA", items: [
+    { id: "siata", t: "Aire, lluvia y quebradas", c: "#19b6c7" },
+  ] },
   { grupo: "Campus", items: [
     { id: "edificios", t: "Edificios 3D", c: "#00A9E0" },
     { id: "bloques", t: "Números de bloque", c: "#BCE6FB" },
@@ -172,6 +178,81 @@ const CAPAS: { grupo: string; items: { id: CapaId; t: string; c: string }[] }[] 
   ] },
 ];
 
+function useOcup() {
+  const [d, setD] = useState<{ horas: number[]; total_dia: number[] } | null>(null);
+  useEffect(() => { fetch("/data/ocupacion.json").then((r) => r.json()).then(setD).catch(() => {}); }, []);
+  return d;
+}
+
+function ControlOcupacion() {
+  const st = useLab();
+  const d = useOcup();
+  const horas = d?.horas ?? [];
+  const i = horas.indexOf(st.hora);
+  const total = d && i >= 0 ? d.total_dia[i] : 0;
+  const pico = d ? d.total_dia.indexOf(Math.max(...d.total_dia)) : -1;
+  return (
+    <div className="mb-1 ml-[18px] mt-1.5 space-y-2">
+      <div className="flex items-baseline justify-between">
+        <span className="num text-[18px] font-light leading-none text-zafre">{String(st.hora).padStart(2, "0")}:00</span>
+        <span className="text-[11px] text-[#8a8b8f]">~{fmt(total)} personas</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <button onClick={() => lab.set({ horaPlay: !st.horaPlay })} aria-label={st.horaPlay ? "Pausar el día" : "Reproducir el día"}
+          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zafre hover:bg-black/5">
+          {st.horaPlay
+            ? <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="1.5" width="2.6" height="9" rx=".6" fill="currentColor" /><rect x="7.4" y="1.5" width="2.6" height="9" rx=".6" fill="currentColor" /></svg>
+            : <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" fill="currentColor" /></svg>}
+        </button>
+        <input className="desliz grow" style={{ ["--c" as any]: "#F0142C" }} type="range" min={6} max={21} step={1}
+          value={st.hora} onChange={(e) => lab.set({ hora: +e.target.value, horaPlay: false })} aria-label="Franja horaria" />
+      </div>
+      <div>
+        <div className="h-1.5 rounded-full" style={{ background: "linear-gradient(90deg,#3aa0c8,#46C69F,#F8D300,#FF8F1B,#F0142C)" }} />
+        <div className="mt-0.5 flex justify-between text-[9.5px] text-[#a0a1a5]"><span>holgado</span><span>saturado</span></div>
+      </div>
+      {pico >= 0 && <p className="text-[10.5px] leading-snug text-[#8a8b8f]">Pico del día a las {String(horas[pico]).padStart(2, "0")}:00 (~{fmt(d!.total_dia[pico])}). La altura de cada columna es su ocupación frente a la capacidad.</p>}
+      <p className="text-[10px] leading-snug text-[#c0392b]">Simulación, no es dato real de EAFIT. Marcador de posición del conteo agregado de la red Wi-Fi (clientes por AP y franja) que entrega DTI.</p>
+    </div>
+  );
+}
+
+function ControlSiata() {
+  const [d, setD] = useState<any>(null);
+  const [err, setErr] = useState(false);
+  useEffect(() => { fetch("/api/siata?km=7").then((r) => r.json()).then(setD).catch(() => setErr(true)); }, []);
+  if (err) return <p className="mb-1 ml-[18px] mt-1 text-[10.5px] text-[#c0392b]">No se pudo contactar a SIATA ahora.</p>;
+  if (!d) return <p className="mb-1 ml-[18px] mt-1 text-[10.5px] text-[#a0a1a5]">Consultando SIATA…</p>;
+  const aire = d.features.filter((f: any) => f.properties.tipo === "aire").sort((a: any, b: any) => a.properties.dist - b.properties.dist);
+  const cerca = aire[0]?.properties;
+  const lluvia = d.features.filter((f: any) => f.properties.tipo === "lluvia" && f.properties.valor > 0).length;
+  const nivel = d.features.filter((f: any) => f.properties.tipo === "nivel").length;
+  return (
+    <div className="mb-1 ml-[18px] mt-1.5 space-y-2">
+      {cerca && (
+        <div className="flex items-center gap-2">
+          <span className="h-3.5 w-3.5 shrink-0 rounded-full" style={{ background: cerca.color }} />
+          <div className="leading-tight">
+            <div className="text-[12px] text-[#1d1d24]">Aire <span className="font-medium">{cerca.cat}</span> · ICA {fmt(cerca.ica)}</div>
+            <div className="text-[10.5px] text-[#8a8b8f]">{cerca.nombre} · {fmt(cerca.dist, 1)} km</div>
+          </div>
+        </div>
+      )}
+      <div className="flex gap-4 text-[11px] text-[#55565a]">
+        <span><i className="mr-1 inline-block h-2 w-2 rounded-full align-middle" style={{ background: "#2f6fe0" }} />{lluvia} con lluvia</span>
+        <span><i className="mr-1 inline-block h-2 w-2 rounded-full align-middle" style={{ background: "#19b6c7" }} />{nivel} quebradas</span>
+      </div>
+      <div>
+        <div className="flex h-1.5 overflow-hidden rounded-full">
+          {["#6EC04E", "#FCE65E", "#F4A23B", "#E74C3C", "#9B59B6"].map((c) => <span key={c} className="flex-1" style={{ background: c }} />)}
+        </div>
+        <div className="mt-0.5 flex justify-between text-[9.5px] text-[#a0a1a5]"><span>Buena</span><span>Peligrosa</span></div>
+      </div>
+      <p className="text-[10px] leading-snug text-[#8a8b8f]">Dato <span className="font-medium text-[#19838f]">real y en vivo</span> de <a className="underline" href="https://siata.gov.co/" target="_blank" rel="noreferrer">SIATA</a> (aire 24 h, lluvia y nivel de quebradas), 7 km alrededor del campus. Se actualiza solo.</p>
+    </div>
+  );
+}
+
 export function Capas() {
   const st = useLab();
   return (
@@ -187,6 +268,8 @@ export function Capas() {
                   <i className={`h-2 w-2 shrink-0 rounded-full transition ${on ? "" : "opacity-25"}`} style={{ background: it.c }} />
                   <span className={on ? "text-[#1d1d24]" : "text-[#a0a1a5]"}>{it.t}</span>
                 </button>
+                {on && it.id === "ocupacion" && <ControlOcupacion />}
+                {on && it.id === "siata" && <ControlSiata />}
                 {on && it.id === "edificios" && (
                   <div className="mb-1 ml-[18px] flex gap-3 text-[11px]">
                     {([["campus", "Resaltar campus"], ["altura", "Por altura"]] as const).map(([k, l]) => (
